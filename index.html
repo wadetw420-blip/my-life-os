@@ -869,6 +869,11 @@
         <div class="ci-text">寫下明日計劃（1句話）</div>
       </div>
     </div>
+	<div style="margin-top:16px">
+  	<button class="save-btn" onclick="syncToOS()">
+    	🔄 同步今日紀錄到 My Life OS
+  	</button>
+	</div>
 
   </div>
 
@@ -1331,9 +1336,47 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
+async function syncToOS() {
+  const day = state.currentDay;
+  const topic = getCurrentDayData().topic;
+
+  const doneTasks = slotStates.map((v, i) => ({
+    task: i,
+    done: v
+  }));
+
+  const payload = {
+    day,
+    date: new Date().toISOString(),
+    topic,
+    tasks: doneTasks,
+    extraNotes: state.weeklyNotes[Math.ceil(day/7)] || {}
+  };
+
+  try {
+    const res = await fetch("/.netlify/functions/save-log", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (res.ok) {
+      showToast("✅ 已同步到 My Life OS");
+    } else {
+      showToast("❌ 同步失敗");
+    }
+  } catch (err) {
+    console.error(err);
+    showToast("❌ 連線錯誤");
+  }
+}
+
 // ========================
 // INIT
 // ========================
+
 updateUI();
 </script>
 </body>
