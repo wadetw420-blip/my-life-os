@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>90天 AI 作戰系統</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #16161f;
+    --border: #1e1e2e;
+    --border2: #2a2a3e;
+    --accent: #00d4aa;
+    --accent2: #7c3aed;
+    --accent3: #f59e0b;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #475569;
+    --danger: #ef4444;
+    --phase1: #00d4aa;
+    --phase2: #7c3aed;
+    --phase3: #f59e0b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,170,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,170,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Glow orb */
+  body::after {
+    content: '';
+    position: fixed;
+    top: -20%;
+    right: -20%;
+    width: 60vw;
+    height: 60vw;
+    background: radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding: 16px; }
+
+  /* Header */
+  .header {
+    padding: 20px 0 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+
+  .sys-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .header h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .day-badge {
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    border-radius: 8px;
+    padding: 8px 14px;
+    text-align: center;
+    min-width: 64px;
+    flex-shrink: 0;
+  }
+
+  .day-badge .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .day-badge .label {
+    font-size: 9px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.1em;
+  }
+
+  /* Main progress bar */
+  .main-progress {
+    background: var(--surface2);
+    border-radius: 4px;
+    height: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .main-progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+    position: relative;
+  }
+
+  .main-progress-fill::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent2);
+    box-shadow: 0 0 8px var(--accent2);
+  }
+
+  .progress-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+  }
+
+  .progress-labels span:last-child { color: var(--accent); }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 8px 4px;
+    border: none;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--text3);
+    font-size: 11px;
+    font-family: 'Noto Sans TC', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .tab.active {
+    background: var(--surface2);
+    color: var(--accent);
+    border: 1px solid var(--border2);
+  }
+
+  /* Panels */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* Phase banner */
+  .phase-banner {
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    border: 1px solid;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .phase-banner.p1 { background: rgba(0,212,170,0.06); border-color: rgba(0,212,170,0.2); }
+  .phase-banner.p2 { background: rgba(124,58,237,0.06); border-color: rgba(124,58,237,0.2); }
+  .phase-banner.p3 { background: rgba(245,158,11,0.06); border-color: rgba(245,158,11,0.2); }
+
+  .phase-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: pulse 2s infinite;
+  }
+
+  .phase-banner.p1 .phase-dot { background: var(--phase1); box-shadow: 0 0 8px var(--phase1); }
+  .phase-banner.p2 .phase-dot { background: var(--phase2); box-shadow: 0 0 8px var(--phase2); }
+  .phase-banner.p3 .phase-dot { background: var(--phase3); box-shadow: 0 0 8px var(--phase3); }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .phase-info { flex: 1; }
+  .phase-info .phase-name {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+  }
+
+  .phase-info .phase-desc {
+    font-size: 11px;
+    color: var(--text2);
+  }
+
+  /* Today's focus */
+  .focus-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .card-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--text3);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .card-label::before {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 1px;
+    background: var(--border2);
+  }
+
+  .focus-theme {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+
+  .focus-question {
+    font-size: 12px;
+    color: var(--accent);
+    font-style: italic;
+    padding: 8px 12px;
+    background: rgba(0,212,170,0.05);
+    border-left: 2px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    margin-top: 10px;
+  }
+
+  /* Time slots */
+  .time-slots { margin-bottom: 16px; }
+
+  .slot {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .slot:last-child { border-bottom: none; }
+  .slot:hover { padding-left: 4px; }
+
+  .slot-check {
+    width: 20px; height: 20px;
+    border: 2px solid var(--border2);
+    border-radius: 5px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    background: var(--surface2);
+  }
+
+  .slot.done .slot-check {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .slot.done .slot-check::after {
+    content: '✓';
+    color: #000;
+    font-size: 11px;
+    font-weight: 900;
+  }
+
+  .slot.done .slot-title { text-decoration: line-through; color: var(--text3); }
+  .slot.done .slot-time { color: var(--text3); }
+
+  .slot-content { flex: 1; }
+
+  .slot-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    margin-bottom: 3px;
+  }
+
+  .slot-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .slot-desc {
+    font-size: 11px;
+    color: var(--text2);
+  }
+
+  /* Daily progress */
+  .daily-progress {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+  }
+
+  .dp-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .dp-pct {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .dp-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .dp-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #00ffcc);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  /* Goals section */
+  .goals-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .goal-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+  }
+
+  .goal-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 2px;
+  }
+
+  .goal-label {
+    font-size: 11px;
+    color: var(--text2);
+    line-height: 1.3;
+  }
+
+  /* Roadmap */
+  .roadmap { margin-bottom: 16px; }
+
+  .phase-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .phase-block::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+  }
+
+  .phase-block.p1::before { background: var(--phase1); }
+  .phase-block.p2::before { background: var(--phase2); }
+  .phase-block.p3::before { background: var(--phase3); }
+
+  .pb-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .pb-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .pb-days {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+  }
+
+  .pb-desc {
+    font-size: 11px;
+    color: var(--text2);
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+
+  .pb-items {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .pb-item {
+    font-size: 11px;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .pb-item::before {
+    content: '→';
+    font-size: 10px;
+    color: var(--text3);
+  }
+
+  .pb-progress {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-top: 10px;
+    overflow: hidden;
+  }
+
+  .pb-progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.6s ease;
+  }
+
+  .p1 .pb-progress-fill { background: var(--phase1); }
+  .p2 .pb-progress-fill { background: var(--phase2); }
+  .p3 .pb-progress-fill { background: var(--phase3); }
+
+  /* Weekly review */
+  .week-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+
+  .week-q {
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+
+  .week-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: var(--text);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 12px;
+    resize: none;
+    min-height: 70px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .week-input:focus { border-color: var(--accent); }
+  .week-input::placeholder { color: var(--text3); }
+
+  .save-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    border: none;
+    border-radius: 10px;
+    color: #000;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: opacity 0.2s, transform 0.1s;
+    letter-spacing: 0.05em;
+  }
+
+  .save-btn:active { transform: scale(0.98); opacity: 0.9; }
+
+  /* Stats */
+  .stat-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .stat-box {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 10px;
+    text-align: center;
+  }
+
+  .stat-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+
+  .stat-lbl { font-size: 10px; color: var(--text3); }
+
+  .c-green { color: var(--accent); }
+  .c-purple { color: var(--accent2); }
+  .c-amber { color: var(--accent3); }
+
+  /* Day selector */
+  .day-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .day-nav button {
+    width: 32px; height: 32px;
+    border: 1px solid var(--border2);
+    border-radius: 7px;
+    background: var(--surface);
+    color: var(--text2);
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .day-nav button:hover { border-color: var(--accent); color: var(--accent); }
+
+  .day-nav .day-info {
+    flex: 1;
+    text-align: center;
+  }
+
+  .day-nav .dn-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .day-nav .dn-topic {
+    font-size: 12px;
+    color: var(--text);
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--surface2);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 12px;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    z-index: 100;
+    white-space: nowrap;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Streak */
+  .streak-banner {
+    background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(245,158,11,0.05));
+    border: 1px solid rgba(245,158,11,0.25);
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .streak-fire { font-size: 20px; }
+
+  .streak-text { flex: 1; }
+  .streak-text .s-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent3);
+    display: inline;
+  }
+  .streak-text .s-label { font-size: 11px; color: var(--text2); }
+
+  /* Checklist items */
+  .checklist { margin-bottom: 16px; }
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .check-item:last-child { border: none; }
+
+  .ci-box {
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--border2);
+    border-radius: 4px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    background: var(--bg);
+  }
+
+  .check-item.done .ci-box {
+    background: var(--accent2);
+    border-color: var(--accent2);
+  }
+
+  .check-item.done .ci-box::after {
+    content: '✓';
+    color: #fff;
+    font-size: 10px;
+    font-weight: 900;
+  }
+
+  .ci-text { font-size: 12px; color: var(--text); }
+  .check-item.done .ci-text { text-decoration: line-through; color: var(--text3); }
+
+  /* divider */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 16px 0;
+  }
+
+  .section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  /* Scroll */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <div class="sys-label">⬡ MISSION SYSTEM v1.0</div>
+        <h1>90天 AI<br>作戰系統</h1>
+      </div>
+      <div class="day-badge">
+        <div class="num" id="badgeDay">1</div>
+        <div class="label">DAY</div>
+      </div>
+    </div>
+    <div class="main-progress">
+      <div class="main-progress-fill" id="mainBar" style="width:1.1%"></div>
+    </div>
+    <div class="progress-labels">
+      <span>DAY 1</span>
+      <span id="mainPct">1 / 90</span>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('today')">今日</button>
+    <button class="tab" onclick="switchTab('roadmap')">路線圖</button>
+    <button class="tab" onclick="switchTab('weekly')">週回顧</button>
+    <button class="tab" onclick="switchTab('stats')">數據</button>
+  </div>
+
+  <!-- TODAY PANEL -->
+  <div class="panel active" id="panel-today">
+
+    <!-- Streak -->
+    <div class="streak-banner">
+      <div class="streak-fire">🔥</div>
+      <div class="streak-text">
+        <span class="s-num" id="streakNum">0</span>
+        <div class="s-label">天連續完成 · 保持節奏</div>
+      </div>
+    </div>
+
+    <!-- Phase Banner -->
+    <div class="phase-banner p1" id="phaseBanner">
+      <div class="phase-dot"></div>
+      <div class="phase-info">
+        <div class="phase-name" id="phaseName" style="color:var(--phase1)">PHASE 1 — 建立習慣</div>
+        <div class="phase-desc" id="phaseDesc">Day 1–30：建立 AI 使用習慣與學習節奏</div>
+      </div>
+    </div>
+
+    <!-- Day Nav -->
+    <div class="day-nav">
+      <button onclick="changeDay(-1)">‹</button>
+      <div class="day-info">
+        <div class="dn-label">DAY <span id="navDay">1</span> / 90</div>
+        <div class="dn-topic" id="navTopic">-</div>
+      </div>
+      <button onclick="changeDay(1)">›</button>
+    </div>
+
+    <!-- Today's Focus -->
+    <div class="focus-card">
+      <div class="card-label">今日主題</div>
+      <div class="focus-theme" id="focusTheme">AI 工具初探：ChatGPT & Claude</div>
+      <div class="focus-question" id="focusQuestion">今日核心問題：AI 如何讓我節省一小時以上的時間？</div>
+    </div>
+
+    <!-- Daily Tasks -->
+    <div class="daily-progress">
+      <div class="dp-top">
+        <span class="card-label" style="margin:0">今日進度</span>
+        <span class="dp-pct" id="dpPct">0%</span>
+      </div>
+      <div class="dp-bar">
+        <div class="dp-fill" id="dpFill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="section-title">固定時間表</div>
+
+    <div class="time-slots" id="timeSlots">
+      <div class="slot" onclick="toggleSlot(this, 0)">
+        <div class="slot-check"></div>
+        <div class="slot-content">
+          <div class="slot-time">11:00 – 11:30</div>
+          <div class="slot-title">今日主題學習</div>
+          <div class="slot-desc">閱讀、看影片或研究核心概念</div>
+        </div>
+      </div>
+      <div class="slot" onclick="toggleSlot(this, 1)">
+        <div class="slot-check"></div>
+        <div class="slot-content">
+          <div class="slot-time">11:30 – 11:50</div>
+          <div class="slot-title">實作練習</div>
+          <div class="slot-desc">動手操作、測試工具或寫 Prompt</div>
+        </div>
+      </div>
+      <div class="slot" onclick="toggleSlot(this, 2)">
+        <div class="slot-check"></div>
+        <div class="slot-content">
+          <div class="slot-time">20:30 – 21:00</div>
+          <div class="slot-title">輸出內容或筆記</div>
+          <div class="slot-desc">整理今日學習，寫一篇短文或筆記</div>
+        </div>
+      </div>
+      <div class="slot" onclick="toggleSlot(this, 3)">
+        <div class="slot-check"></div>
+        <div class="slot-content">
+          <div class="slot-time">21:00 – 21:20</div>
+          <div class="slot-title">更新每日記錄</div>
+          <div class="slot-desc">記錄到 03_每天記錄.md</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Extra checklist -->
+    <div class="divider"></div>
+    <div class="section-title">今日附加目標</div>
+    <div class="checklist" id="extraChecklist">
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="ci-box"></div>
+        <div class="ci-text">完成至少一個 Prompt 實作</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="ci-box"></div>
+        <div class="ci-text">更新工具筆記.md</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="ci-box"></div>
+        <div class="ci-text">寫下明日計劃（1句話）</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ROADMAP PANEL -->
+  <div class="panel" id="panel-roadmap">
+
+    <div class="section-title" style="margin-bottom:14px">三階段作戰路線圖</div>
+
+    <div class="phase-block p1">
+      <div class="pb-header">
+        <div class="pb-title">Phase 1：建立 AI 使用習慣</div>
+        <div class="pb-days">Day 1–30</div>
+      </div>
+      <div class="pb-desc">熟悉工具，建立每日學習節奏，累積基礎知識</div>
+      <div class="pb-items">
+        <div class="pb-item">每日使用 ChatGPT / Claude</div>
+        <div class="pb-item">學習 Prompt Engineering 基礎</div>
+        <div class="pb-item">測試 5 個以上 AI 工具</div>
+        <div class="pb-item">完成 10 個作品原型</div>
+        <div class="pb-item">累積 30 篇學習筆記</div>
+      </div>
+      <div class="pb-progress">
+        <div class="pb-progress-fill" id="phase1Bar" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="phase-block p2">
+      <div class="pb-header">
+        <div class="pb-title">Phase 2：穩定輸出與方向測試</div>
+        <div class="pb-days">Day 31–60</div>
+      </div>
+      <div class="pb-desc">建立內容輸出習慣，測試變現可能，收集市場反饋</div>
+      <div class="pb-items">
+        <div class="pb-item">每週輸出 3 篇內容</div>
+        <div class="pb-item">建立自媒體帳號並開始發布</div>
+        <div class="pb-item">測試 2–3 個商業變現方向</div>
+        <div class="pb-item">累積 20–30 個作品</div>
+        <div class="pb-item">獲得第一批受眾回饋</div>
+      </div>
+      <div class="pb-progress">
+        <div class="pb-progress-fill" id="phase2Bar" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="phase-block p3">
+      <div class="pb-header">
+        <div class="pb-title">Phase 3：收斂方向與第一筆收入</div>
+        <div class="pb-days">Day 61–90</div>
+      </div>
+      <div class="pb-desc">聚焦最有潛力方向，完成作品集，達成第一筆 AI 收入</div>
+      <div class="pb-items">
+        <div class="pb-item">選定 1 個主力變現方向</div>
+        <div class="pb-item">完成 30–50 個作品集</div>
+        <div class="pb-item">完成第一筆 AI 收入</div>
+        <div class="pb-item">建立個人品牌基礎</div>
+        <div class="pb-item">規劃 Phase 4 路線</div>
+      </div>
+      <div class="pb-progress">
+        <div class="pb-progress-fill" id="phase3Bar" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-title">終極目標</div>
+    <div class="goals-grid">
+      <div class="goal-item">
+        <div class="goal-num c-green">30+</div>
+        <div class="goal-label">作品累積</div>
+      </div>
+      <div class="goal-item">
+        <div class="goal-num c-purple">5+</div>
+        <div class="goal-label">AI 工具精通</div>
+      </div>
+      <div class="goal-item">
+        <div class="goal-num c-amber">1</div>
+        <div class="goal-label">第一筆 AI 收入</div>
+      </div>
+      <div class="goal-item">
+        <div class="goal-num c-green">∞</div>
+        <div class="goal-label">持續成長系統</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- WEEKLY PANEL -->
+  <div class="panel" id="panel-weekly">
+    <div class="section-title" style="margin-bottom:14px">週回顧 · Week <span id="weekNum">1</span></div>
+
+    <div class="week-card">
+      <div class="card-label">本週完成了什麼</div>
+      <textarea class="week-input" placeholder="記錄本週的主要成果..." id="wq1"></textarea>
+    </div>
+
+    <div class="week-card">
+      <div class="card-label">最大收穫</div>
+      <textarea class="week-input" placeholder="學到了什麼最重要的事..." id="wq2"></textarea>
+    </div>
+
+    <div class="week-card">
+      <div class="card-label">遇到的困難</div>
+      <textarea class="week-input" placeholder="哪裡卡住了？原因是什麼..." id="wq3"></textarea>
+    </div>
+
+    <div class="week-card">
+      <div class="card-label">下週調整策略</div>
+      <textarea class="week-input" placeholder="下週要改變或強化什麼..." id="wq4"></textarea>
+    </div>
+
+    <div class="week-card">
+      <div class="card-label">當前核心主線</div>
+      <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap">
+        <span style="background:rgba(0,212,170,0.1);border:1px solid rgba(0,212,170,0.3);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--accent)">AI 應用</span>
+        <span style="background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.3);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--accent2)">內容輸出</span>
+        <span style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--accent3)">商業變現</span>
+      </div>
+    </div>
+
+    <button class="save-btn" onclick="saveWeekly()">儲存週回顧</button>
+  </div>
+
+  <!-- STATS PANEL -->
+  <div class="panel" id="panel-stats">
+    <div class="section-title" style="margin-bottom:14px">進度數據總覽</div>
+
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="stat-val c-green" id="statDay">1</div>
+        <div class="stat-lbl">當前天數</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val c-purple" id="statStreak">0</div>
+        <div class="stat-lbl">連續天數</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val c-amber" id="statDone">0</div>
+        <div class="stat-lbl">完成天數</div>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="stat-val c-green" id="statPct">1%</div>
+        <div class="stat-lbl">整體進度</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val c-purple" id="statRemain">89</div>
+        <div class="stat-lbl">剩餘天數</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-title">學習方向追蹤</div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:12px">
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+          <span style="font-size:11px;color:var(--text2)">AI 工具應用</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent)" id="track1Pct">0%</span>
+        </div>
+        <div style="height:4px;background:var(--border);border-radius:2px">
+          <div id="track1Bar" style="height:100%;background:var(--accent);border-radius:2px;width:0%;transition:width 0.6s"></div>
+        </div>
+      </div>
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+          <span style="font-size:11px;color:var(--text2)">自媒體輸出</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent2)" id="track2Pct">0%</span>
+        </div>
+        <div style="height:4px;background:var(--border);border-radius:2px">
+          <div id="track2Bar" style="height:100%;background:var(--accent2);border-radius:2px;width:0%;transition:width 0.6s"></div>
+        </div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+          <span style="font-size:11px;color:var(--text2)">商業變現</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent3)" id="track3Pct">0%</span>
+        </div>
+        <div style="height:4px;background:var(--border);border-radius:2px">
+          <div id="track3Bar" style="height:100%;background:var(--accent3);border-radius:2px;width:0%;transition:width 0.6s"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-title">系統操作</div>
+    <div style="display:flex;gap:8px">
+      <button onclick="changeDay(-1)" style="flex:1;padding:10px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;color:var(--text2);font-size:11px;cursor:pointer">◀ 前一天</button>
+      <button onclick="jumpToday()" style="flex:1;padding:10px;background:var(--surface);border:1px solid var(--accent);border-radius:8px;color:var(--accent);font-size:11px;cursor:pointer">今天</button>
+      <button onclick="changeDay(1)" style="flex:1;padding:10px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;color:var(--text2);font-size:11px;cursor:pointer">後一天 ▶</button>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="toast" id="toast">✓ 已儲存</div>
+
+<script>
+// ========================
+// DATA
+// ========================
+
+const topics = [
+  // Phase 1: Day 1-30
+  "AI 工具初探：ChatGPT & Claude","Prompt 基礎：如何問對問題","Claude 進階使用技巧","ChatGPT 實戰應用","Notion AI 整合工作流",
+  "AI 寫作：文章生成技巧","AI 圖像生成：Midjourney 入門","AI 圖像：Stable Diffusion 基礎","Prompt Engineering 中階技巧","AI 自動化：Zapier 入門",
+  "Make.com 工作流設計","AI 音頻工具：ElevenLabs","影片 AI 工具：Runway ML","AI 數據分析：ChatGPT + Excel","Perplexity AI 研究工具",
+  "建立第一個 AI 自動化流程","AI SEO 工具應用","Gamma.app AI 簡報","AI 程式輔助：GitHub Copilot","Claude API 基礎入門",
+  "第一個作品完成：AI 工具筆記整理","AI Workflow 設計原則","整合多個 AI 工具","自動化 Prompt 模板庫建立","Phase 1 中期回顧",
+  "AI 內容策略規劃","建立個人 AI 工具箱","測試 AI 輸出品質","AI 效率評估框架","Phase 1 成果回顧與整理",
+  // Phase 2: Day 31-60
+  "自媒體平台選擇策略","Twitter/X AI 內容策略","LinkedIn AI 個人品牌","YouTube Shorts AI 腳本","IG Reels 內容規劃",
+  "第一篇自媒體文章發布","AI 內容日曆建立","Threads 帳號經營","內容再利用技巧","AI 輔助 SEO 文章",
+  "建立 Newsletter 訂閱","變現方向測試：Gumroad","數位產品設計：Notion 模板","AI 課程內容規劃","Affiliate 行銷 AI 工具",
+  "社群互動與增粉策略","AI 工具評測內容","受眾研究與分析","建立 Lead Magnet","AI 商業模式研究",
+  "Phase 2 中期回顧","內容系統化 SOP 建立","作品集整理 v1","變現方向縮小至 2 個","定價策略研究",
+  "建立個人品牌視覺","Email 行銷 AI 工具","社群數據分析","內容病毒式傳播研究","Phase 2 成果回顧",
+  // Phase 3: Day 61-90
+  "選定主力變現方向","深化核心技能","建立 Landing Page","第一個付費產品設計","定價與包裝策略",
+  "行銷文案 AI 撰寫","社群付費推廣測試","建立銷售漏斗","Email 序列設計","客戶回饋收集",
+  "作品集優化","個人品牌強化","建立聯盟合作","第一筆收入衝刺","商業模式驗證",
+  "系統自動化升級","內容複利系統建立","建立粉絲社群","Phase 3 中期衝刺","收入來源多元化",
+  "建立被動收入基礎","數位產品上架","作品集最終版","個人網站建立","90天成果統計",
+  "制定下一個90天計劃","建立長期系統 SOP","自動化流程優化","財務目標追蹤","90天作戰系統完成！"
+];
+
+const questions = [
+  "AI 如何讓我節省一小時以上的時間？",
+  "什麼樣的 Prompt 能讓 AI 真正幫到我？",
+  "今天的實作成果可以放到作品集嗎？",
+  "這個工具解決了我哪個實際問題？",
+  "如何把今天學到的整合進日常工作流？",
+  "今天的輸出，別人會願意分享嗎？",
+  "哪個 AI 工具最值得繼續深入？",
+  "這個學習如何加速我的變現目標？",
+  "今天有沒有發現可以自動化的流程？",
+  "我的 AI 技能在哪裡還有明顯缺口？",
+];
+
+// ========================
+// STATE
+// ========================
+
+let state = JSON.parse(localStorage.getItem('ai90_state') || 'null') || {
+  currentDay: 1,
+  completedDays: {},
+  streak: 0,
+  lastCompletedDate: null,
+  weeklyNotes: {},
+};
+
+let slotStates = [false, false, false, false];
+
+// ========================
+// CORE FUNCTIONS
+// ========================
+
+function getCurrentDayData() {
+  const day = state.currentDay;
+  const topicIdx = Math.min(day - 1, topics.length - 1);
+  const qIdx = (day - 1) % questions.length;
+  return { topic: topics[topicIdx], question: questions[qIdx] };
+}
+
+function getPhase(day) {
+  if (day <= 30) return 1;
+  if (day <= 60) return 2;
+  return 3;
+}
+
+function updateUI() {
+  const day = state.currentDay;
+  const { topic, question } = getCurrentDayData();
+  const phase = getPhase(day);
+  const pct = Math.round((day / 90) * 100);
+
+  // Header
+  document.getElementById('badgeDay').textContent = day;
+  document.getElementById('mainBar').style.width = Math.max(pct, 1.1) + '%';
+  document.getElementById('mainPct').textContent = day + ' / 90';
+
+  // Nav
+  document.getElementById('navDay').textContent = day;
+  document.getElementById('navTopic').textContent = topic;
+
+  // Focus
+  document.getElementById('focusTheme').textContent = topic;
+  document.getElementById('focusQuestion').textContent = '今日核心問題：' + question;
+
+  // Phase
+  const banner = document.getElementById('phaseBanner');
+  const phaseName = document.getElementById('phaseName');
+  const phaseDesc = document.getElementById('phaseDesc');
+
+  banner.className = 'phase-banner p' + phase;
+  if (phase === 1) {
+    phaseName.style.color = 'var(--phase1)';
+    phaseName.textContent = 'PHASE 1 — 建立習慣';
+    phaseDesc.textContent = 'Day 1–30：建立 AI 使用習慣與學習節奏';
+  } else if (phase === 2) {
+    phaseName.style.color = 'var(--phase2)';
+    phaseName.textContent = 'PHASE 2 — 穩定輸出';
+    phaseDesc.textContent = 'Day 31–60：穩定輸出與方向測試';
+  } else {
+    phaseName.style.color = 'var(--phase3)';
+    phaseName.textContent = 'PHASE 3 — 收斂變現';
+    phaseDesc.textContent = 'Day 61–90：收斂方向，完成第一筆收入';
+  }
+
+  // Streak
+  document.getElementById('streakNum').textContent = state.streak;
+
+  // Roadmap bars
+  const p1Days = Math.min(Math.max(day - 0, 0), 30);
+  const p2Days = Math.min(Math.max(day - 30, 0), 30);
+  const p3Days = Math.min(Math.max(day - 60, 0), 30);
+  document.getElementById('phase1Bar').style.width = (p1Days / 30 * 100) + '%';
+  document.getElementById('phase2Bar').style.width = (p2Days / 30 * 100) + '%';
+  document.getElementById('phase3Bar').style.width = (p3Days / 30 * 100) + '%';
+
+  // Week
+  document.getElementById('weekNum').textContent = Math.ceil(day / 7);
+
+  // Stats
+  const doneDays = Object.keys(state.completedDays).length;
+  document.getElementById('statDay').textContent = day;
+  document.getElementById('statStreak').textContent = state.streak;
+  document.getElementById('statDone').textContent = doneDays;
+  document.getElementById('statPct').textContent = pct + '%';
+  document.getElementById('statRemain').textContent = 90 - day;
+
+  // Tracking bars (simulated based on phase)
+  const t1 = Math.min(pct, 100);
+  const t2 = phase >= 2 ? Math.min((day - 30) / 30 * 100, 100) : 0;
+  const t3 = phase >= 3 ? Math.min((day - 60) / 30 * 100, 100) : 0;
+  document.getElementById('track1Bar').style.width = t1 + '%';
+  document.getElementById('track1Pct').textContent = Math.round(t1) + '%';
+  document.getElementById('track2Bar').style.width = t2 + '%';
+  document.getElementById('track2Pct').textContent = Math.round(t2) + '%';
+  document.getElementById('track3Bar').style.width = t3 + '%';
+  document.getElementById('track3Pct').textContent = Math.round(t3) + '%';
+
+  // Load slot states for this day
+  const saved = state.completedDays[day];
+  slotStates = saved ? [...saved.slots] : [false, false, false, false];
+  renderSlots();
+  updateDailyProgress();
+
+  // Weekly notes
+  const wk = Math.ceil(day / 7);
+  const notes = state.weeklyNotes[wk] || {};
+  document.getElementById('wq1').value = notes.q1 || '';
+  document.getElementById('wq2').value = notes.q2 || '';
+  document.getElementById('wq3').value = notes.q3 || '';
+  document.getElementById('wq4').value = notes.q4 || '';
+}
+
+function renderSlots() {
+  const slots = document.querySelectorAll('.slot');
+  slots.forEach((slot, i) => {
+    if (slotStates[i]) slot.classList.add('done');
+    else slot.classList.remove('done');
+  });
+}
+
+function updateDailyProgress() {
+  const done = slotStates.filter(Boolean).length;
+  const pct = Math.round((done / 4) * 100);
+  document.getElementById('dpPct').textContent = pct + '%';
+  document.getElementById('dpFill').style.width = pct + '%';
+
+  if (pct === 100) {
+    markDayComplete();
+  }
+}
+
+function markDayComplete() {
+  const day = state.currentDay;
+  const today = new Date().toDateString();
+
+  if (!state.completedDays[day]) {
+    state.completedDays[day] = { slots: [...slotStates], date: today };
+
+    // Streak logic
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    if (state.lastCompletedDate === yesterday.toDateString() || state.lastCompletedDate === today) {
+      state.streak++;
+    } else {
+      state.streak = 1;
+    }
+    state.lastCompletedDate = today;
+    saveState();
+    updateUI();
+    showToast('🎯 今日完成！連續 ' + state.streak + ' 天');
+  } else {
+    state.completedDays[day].slots = [...slotStates];
+    saveState();
+  }
+}
+
+function toggleSlot(el, idx) {
+  slotStates[idx] = !slotStates[idx];
+  renderSlots();
+  updateDailyProgress();
+  saveState();
+}
+
+function toggleCheck(el) {
+  el.classList.toggle('done');
+}
+
+function changeDay(delta) {
+  const newDay = Math.max(1, Math.min(90, state.currentDay + delta));
+  state.currentDay = newDay;
+  saveState();
+  updateUI();
+}
+
+function jumpToday() {
+  // Jump to today (you can set a start date; here we use Day 1 as today for demo)
+  state.currentDay = Math.min(state.currentDay, 90);
+  saveState();
+  updateUI();
+}
+
+function saveState() {
+  localStorage.setItem('ai90_state', JSON.stringify(state));
+}
+
+function saveWeekly() {
+  const wk = Math.ceil(state.currentDay / 7);
+  state.weeklyNotes[wk] = {
+    q1: document.getElementById('wq1').value,
+    q2: document.getElementById('wq2').value,
+    q3: document.getElementById('wq3').value,
+    q4: document.getElementById('wq4').value,
+  };
+  saveState();
+  showToast('✓ 週回顧已儲存');
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.remove('active');
+  });
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+
+  const tabs = document.querySelectorAll('.tab');
+  const map = { today: 0, roadmap: 1, weekly: 2, stats: 3 };
+  tabs[map[name]].classList.add('active');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ========================
+// INIT
+// ========================
+updateUI();
+</script>
+</body>
+</html>
