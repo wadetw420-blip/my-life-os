@@ -913,10 +913,10 @@
 
     <!-- AI Mission Engine -->
     <div class="focus-card" id="aiMissionCard">
-      <div class="card-label">AI 人生教練模式 v2.0</div>
+      <div class="card-label">AI 雲端主腦 v6.1</div>
 
       <div style="font-size:11px;color:var(--text3);margin-bottom:8px">
-        讀取：人生主線 / Personal OS / AI Master / 每日紀錄 / 週回顧
+        讀取：Supabase 雲端每日紀錄 / 週回顧 / AI 狀態
       </div>
 
       <div class="focus-theme" id="aiPriorityTask">分析中...</div>
@@ -1548,42 +1548,47 @@ async function saveWeekly() {
     q4: document.getElementById('wq4').value,
   };
 
-  state.weeklyNotes[wk] = {
-    q1: weeklyPayload.q1,
-    q2: weeklyPayload.q2,
-    q3: weeklyPayload.q3,
-    q4: weeklyPayload.q4,
-  };
-
+  // Do not keep weekly review text in browser localStorage.
+  // Source of truth is Supabase cloud version + local md when running locally.
+  delete state.weeklyNotes[wk];
   saveState();
 
-  try {
-    const res = await fetch("http://localhost:3000/save-weekly", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(weeklyPayload)
-    });
+  let localOK = false;
+  let cloudOK = false;
 
-    if (res.ok) {
-
+  if (IS_LOCAL_DASHBOARD) {
     try {
-      await saveWeeklyToCloud(weeklyPayload);
-      setCloudStatus("✅ 週回顧已同步到 Supabase 雲端");
-    } catch (cloudErr) {
-      console.error("Weekly cloud sync failed:", cloudErr);
-      setCloudStatus("⚠️ 週回顧本機已存，但雲端同步失敗");
+      const res = await fetch("http://localhost:3000/save-weekly", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(weeklyPayload)
+      });
+      localOK = res.ok;
+    } catch (err) {
+      console.log("Local weekly save unavailable, cloud only.", err);
     }
+  }
 
-      showToast('✅ 週回顧已同步到 My Life OS');
-      if (typeof loadRPGStats === 'function') loadRPGStats();
-    } else {
-      showToast('❌ 週回顧同步失敗');
-    }
-  } catch (err) {
-    console.error(err);
-    showToast('❌ Server 未連線');
+  try {
+    await saveWeeklyToCloud(weeklyPayload);
+    cloudOK = true;
+  } catch (cloudErr) {
+    console.error("Weekly cloud sync failed:", cloudErr);
+    setCloudStatus("⚠️ 週回顧雲端同步失敗");
+  }
+
+  if (cloudOK || localOK) {
+    showToast(cloudOK ? '✅ 週回顧已同步到 Cloud' : '✅ 週回顧已同步到本機');
+    ['wq1','wq2','wq3','wq4'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    if (typeof loadRPGStats === 'function') loadRPGStats();
+    if (typeof loadLatestCloudState === 'function') loadLatestCloudState();
+  } else {
+    showToast('❌ 週回顧同步失敗');
   }
 }
 
@@ -1848,13 +1853,25 @@ function updateCloudAICore(rows) {
     if (coach) {
       coach.textContent = `雲端主腦判斷：${bottleneck}。今天唯一主線：${onlyMission}。`;
     }
+
+    setText("aiPriorityTask", onlyMission);
+    setText("aiReason", bottleneck);
+    setText("aiTime", "11:30–12:00");
+    setText("aiAction", `用 30 分鐘完成：「${onlyMission}」，並同步到雲端。`);
+    setText("aiAvoid", "不要只研究工具；不要只整理系統；不要拖延輸出");
+    setText("aiOutput", outputCount === 0 ? "今天至少產出一個可保存成果。" : "延續最近成果，整理成可展示素材。");
+    setText("aiMonetize", moneyCount === 0 ? "把今天成果命名成一個小服務、模板或作品案例。" : "延續既有變現線索，做一次小測試。");
   } catch (err) {
     console.error("Cloud AI core failed:", err);
   }
 }
 
 async function loadAIMission() {
-  if (!IS_LOCAL_DASHBOARD) return;
+  if (!IS_LOCAL_DASHBOARD) {
+    // Netlify cloud version uses Supabase-based AI Core instead of local server API.
+    return;
+  }
+
   try {
     const res = await fetch("http://localhost:3000/ai-daily-plan");
     const data = await res.json();
@@ -1873,7 +1890,6 @@ async function loadAIMission() {
     if (avoid) avoid.textContent = data.avoid || "避免只看內容、不做輸出。";
     if (output) output.textContent = data.output || "完成一則可保存到作品區的輸出。";
     if (monetize) monetize.textContent = data.monetize || "把今天的成果往可展示、可服務、可販售方向整理。";
-
   } catch (e) {
     console.error(e);
   }
@@ -1950,6 +1966,11 @@ function debounce(fn, delay) {
 }
 
 async function loadRPGStats() {
+  if (!IS_LOCAL_DASHBOARD) {
+    // Cloud version calculates AI Core from Supabase logs; RPG local API is skipped on Netlify.
+    return;
+  }
+
   try {
     const res = await fetch("http://localhost:3000/rpg-stats");
     const data = await res.json();

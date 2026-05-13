@@ -1,11 +1,6 @@
-# My Life OS v6 Web App
+# My Life OS v6.1 Cloud AI
 
-This is the Netlify-ready cloud version of My Life OS.
-
-## Files
-- index.html: Dashboard web app
-- manifest.json: installable mobile web app metadata
-- netlify.toml: Netlify static deploy config
-
-## Deploy
-Upload this folder to GitHub, then connect the repo in Netlify.
+Fixes:
+- AI coach on Netlify now uses Supabase cloud logs instead of localhost server API.
+- Weekly review saves directly to Supabase on cloud.
+- Local-only APIs are skipped when running on Netlify.
