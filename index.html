@@ -732,7 +732,82 @@
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 
+
+  /* RPG System */
+  .rpg-card {
+    background: linear-gradient(135deg, rgba(0,212,170,0.08), rgba(124,58,237,0.08));
+    border: 1px solid rgba(0,212,170,0.22);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+  }
+
+  .rpg-top {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+  }
+
+  .rpg-level {
+    font-family:'JetBrains Mono', monospace;
+    font-size:22px;
+    font-weight:700;
+    color:var(--accent);
+  }
+
+  .rpg-xp {
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--text2);
+  }
+
+  .rpg-bar {
+    height:6px;
+    background:var(--border);
+    border-radius:3px;
+    overflow:hidden;
+    margin-bottom:10px;
+  }
+
+  .rpg-fill {
+    height:100%;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    border-radius:3px;
+    transition:width .4s ease;
+  }
+
+  .rpg-achievements {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+
+  .achievement {
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--border2);
+    border-radius:8px;
+    padding:8px;
+    font-size:11px;
+    color:var(--text2);
+  }
+
+  .achievement.done {
+    border-color:rgba(0,212,170,0.35);
+    color:var(--accent);
+  }
+
+  .auto-save-status {
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    color:var(--text3);
+    margin-top:8px;
+    text-align:center;
+  }
+
 </style>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#00e5ff">
 </head>
 <body>
 <div class="app">
@@ -766,6 +841,15 @@
     <button class="tab" onclick="switchTab('stats')">數據</button>
   </div>
 
+
+  <!-- CLOUD SYNC STATUS -->
+  <div class="focus-card" id="cloudStatusCard" style="padding:12px 14px;margin-bottom:16px">
+    <div class="card-label" style="margin-bottom:6px">Cloud Sync</div>
+    <div id="cloudStatus" style="font-size:12px;color:var(--text2);line-height:1.5">
+      Supabase 雲端同步待命中
+    </div>
+  </div>
+
   <!-- TODAY PANEL -->
   <div class="panel active" id="panel-today">
 
@@ -775,6 +859,28 @@
       <div class="streak-text">
         <span class="s-num" id="streakNum">0</span>
         <div class="s-label">天連續完成 · 保持節奏</div>
+      </div>
+    </div>
+
+
+    <!-- RPG Progress -->
+    <div class="rpg-card" id="rpgCard">
+      <div class="card-label">RPG 成長系統</div>
+      <div class="rpg-top">
+        <div>
+          <div class="rpg-level" id="rpgLevel">LV.1</div>
+          <div class="rpg-xp" id="rpgTitle">新手啟動者</div>
+        </div>
+        <div class="rpg-xp" id="rpgXP">0 / 100 XP</div>
+      </div>
+      <div class="rpg-bar">
+        <div class="rpg-fill" id="rpgFill" style="width:0%"></div>
+      </div>
+      <div class="rpg-achievements">
+        <div class="achievement" id="achDaily">每日紀錄 +10XP</div>
+        <div class="achievement" id="achTasks">完成任務 +25XP</div>
+        <div class="achievement" id="achWeekly">週回顧 +50XP</div>
+        <div class="achievement" id="achOutput">輸出成果 +25XP</div>
       </div>
     </div>
 
@@ -804,7 +910,60 @@
       <div class="focus-question" id="focusQuestion">今日核心問題：AI 如何讓我節省一小時以上的時間？</div>
     </div>
 
-    <!-- Daily Tasks -->
+
+    <!-- AI Mission Engine -->
+    <div class="focus-card" id="aiMissionCard">
+      <div class="card-label">AI 人生教練模式 v2.0</div>
+
+      <div style="font-size:11px;color:var(--text3);margin-bottom:8px">
+        讀取：人生主線 / Personal OS / AI Master / 每日紀錄 / 週回顧
+      </div>
+
+      <div class="focus-theme" id="aiPriorityTask">分析中...</div>
+
+      <div style="font-size:12px;color:var(--text2);margin:8px 0">
+        原因：<span id="aiReason">讀取 My Life OS 中...</span>
+      </div>
+
+      <div style="font-size:12px;color:var(--accent);margin:6px 0">
+        建議時間：<span id="aiTime">11:30–11:50</span>
+      </div>
+
+      <div class="focus-question" id="aiAction">
+        正在生成今日具體行動...
+      </div>
+
+      <div class="divider"></div>
+
+      <div style="display:grid;grid-template-columns:1fr;gap:8px">
+        <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.22);border-radius:8px;padding:10px">
+          <div style="font-size:10px;color:var(--danger);letter-spacing:.12em;margin-bottom:4px">今日避免事項</div>
+          <div id="aiAvoid" style="font-size:12px;color:var(--text2)">分析中...</div>
+        </div>
+
+        <div style="background:rgba(0,212,170,0.06);border:1px solid rgba(0,212,170,0.22);border-radius:8px;padding:10px">
+          <div style="font-size:10px;color:var(--accent);letter-spacing:.12em;margin-bottom:4px">今日輸出目標</div>
+          <div id="aiOutput" style="font-size:12px;color:var(--text2)">分析中...</div>
+        </div>
+
+        <div style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.22);border-radius:8px;padding:10px">
+          <div style="font-size:10px;color:var(--accent3);letter-spacing:.12em;margin-bottom:4px">今日變現相關行動</div>
+          <div id="aiMonetize" style="font-size:12px;color:var(--text2)">分析中...</div>
+        </div>
+      </div>
+    </div>
+
+    
+<div style="margin-top:12px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.25);border-radius:10px;padding:12px">
+  <div style="font-size:10px;letter-spacing:.12em;color:var(--accent2);margin-bottom:6px">
+    AI 教練直話
+  </div>
+  <div id="aiCoachTalk" style="font-size:13px;line-height:1.6;color:var(--text)">
+    正在分析你目前的人生主線與進度...
+  </div>
+</div>
+
+<!-- Daily Tasks -->
     <div class="daily-progress">
       <div class="dp-top">
         <span class="card-label" style="margin:0">今日進度</span>
@@ -852,6 +1011,77 @@
       </div>
     </div>
 
+<!-- Daily Reflection -->
+<div class="focus-card">
+
+  <div class="card-label">
+    每日紀錄
+  </div>
+
+  <div style="margin-bottom:12px">
+    <div style="font-size:12px;margin-bottom:6px;color:var(--text2)">
+      今天學到什麼
+    </div>
+
+    <textarea
+      id="learnedInput"
+      class="week-input"
+      placeholder="例如：學會讓 Dashboard 寫入 md..."
+    ></textarea>
+  </div>
+
+  <div style="margin-bottom:12px">
+    <div style="font-size:12px;margin-bottom:6px;color:var(--text2)">
+      今日成果
+    </div>
+
+    <textarea
+      id="resultInput"
+      class="week-input"
+      placeholder="例如：成功完成本地同步系統"
+    ></textarea>
+  </div>
+
+  <div style="margin-bottom:12px">
+    <div style="font-size:12px;margin-bottom:6px;color:var(--text2)">
+      遇到的問題
+    </div>
+
+    <textarea
+      id="problemInput"
+      class="week-input"
+      placeholder="例如：路徑設定一直錯"
+    ></textarea>
+  </div>
+
+  <div>
+    <div style="font-size:12px;margin-bottom:6px;color:var(--text2)">
+      下一步
+    </div>
+
+    <textarea
+      id="nextStepInput"
+      class="week-input"
+      placeholder="例如：讓 Dashboard 自動更新更多 md"
+    ></textarea>
+  </div>
+
+</div>
+
+
+<!-- Auto Organizer -->
+<div class="focus-card" id="organizerCard">
+  <div class="card-label">自動整理資料夾 v1</div>
+  <div class="focus-theme">My Life OS 自動歸檔</div>
+  <div style="font-size:12px;color:var(--text2);line-height:1.6;margin:8px 0">
+    將最近每日紀錄與週回顧中的內容，整理成「內容素材 / 商業想法 / SOP / 資產報告」。
+  </div>
+  <button class="save-btn" onclick="organizeMyLifeOS()">🗂️ 自動整理 My Life OS</button>
+  <div class="focus-question" id="organizerResult" style="margin-top:10px">
+    尚未執行整理
+  </div>
+</div>
+
     <!-- Extra checklist -->
     <div class="divider"></div>
     <div class="section-title">今日附加目標</div>
@@ -873,6 +1103,7 @@
   	<button class="save-btn" onclick="syncToOS()">
     	🔄 同步今日紀錄到 My Life OS
   	</button>
+      <div class="auto-save-status" id="autoSaveStatus">自動存檔待命中</div>
 	</div>
 
   </div>
@@ -1305,35 +1536,90 @@ function saveState() {
   localStorage.setItem('ai90_state', JSON.stringify(state));
 }
 
-function saveWeekly() {
+async function saveWeekly() {
   const wk = Math.ceil(state.currentDay / 7);
-  state.weeklyNotes[wk] = {
+
+  const weeklyPayload = {
+    week: wk,
+    date: new Date().toISOString(),
     q1: document.getElementById('wq1').value,
     q2: document.getElementById('wq2').value,
     q3: document.getElementById('wq3').value,
     q4: document.getElementById('wq4').value,
   };
+
+  state.weeklyNotes[wk] = {
+    q1: weeklyPayload.q1,
+    q2: weeklyPayload.q2,
+    q3: weeklyPayload.q3,
+    q4: weeklyPayload.q4,
+  };
+
   saveState();
-  showToast('✓ 週回顧已儲存');
+
+  try {
+    const res = await fetch("http://localhost:3000/save-weekly", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(weeklyPayload)
+    });
+
+    if (res.ok) {
+
+    try {
+      await saveWeeklyToCloud(weeklyPayload);
+      setCloudStatus("✅ 週回顧已同步到 Supabase 雲端");
+    } catch (cloudErr) {
+      console.error("Weekly cloud sync failed:", cloudErr);
+      setCloudStatus("⚠️ 週回顧本機已存，但雲端同步失敗");
+    }
+
+      showToast('✅ 週回顧已同步到 My Life OS');
+      if (typeof loadRPGStats === 'function') loadRPGStats();
+    } else {
+      showToast('❌ 週回顧同步失敗');
+    }
+  } catch (err) {
+    console.error(err);
+    showToast('❌ Server 未連線');
+  }
 }
 
+
 function switchTab(name) {
-  document.querySelectorAll('.tab').forEach((t, i) => {
+  document.querySelectorAll('.tab').forEach(t => {
     t.classList.remove('active');
   });
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-' + name).classList.add('active');
+
+  document.querySelectorAll('.panel').forEach(p => {
+    p.classList.remove('active');
+  });
+
+  const targetPanel = document.getElementById('panel-' + name);
+  if (targetPanel) {
+    targetPanel.classList.add('active');
+  }
 
   const tabs = document.querySelectorAll('.tab');
   const map = { today: 0, roadmap: 1, weekly: 2, stats: 3 };
-  tabs[map[name]].classList.add('active');
+
+  if (tabs[map[name]]) {
+    tabs[map[name]].classList.add('active');
+  }
 }
 
 function showToast(msg) {
   const t = document.getElementById('toast');
+  if (!t) return;
+
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+
+  setTimeout(() => {
+    t.classList.remove('show');
+  }, 2500);
 }
 
 async function syncToOS() {
@@ -1350,34 +1636,403 @@ async function syncToOS() {
     date: new Date().toISOString(),
     topic,
     tasks: doneTasks,
-    extraNotes: state.weeklyNotes[Math.ceil(day/7)] || {}
+
+    learned: document.getElementById("learnedInput").value,
+    result: document.getElementById("resultInput").value,
+    problem: document.getElementById("problemInput").value,
+    nextStep: document.getElementById("nextStepInput").value,
+
+    extraNotes: state.weeklyNotes[Math.ceil(day / 7)] || {}
   };
 
+  let localOK = false;
+  let cloudOK = false;
+
+  setCloudStatus("同步中：本機 + Supabase...");
+
+  if (IS_LOCAL_DASHBOARD) {
+    try {
+      const res = await fetch("http://localhost:3000/save-log", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      localOK = res.ok;
+    } catch (err) {
+      console.log("Local server unavailable, cloud sync only.", err);
+    }
+  }
+
   try {
-    const res = await fetch("/.netlify/functions/save-log", {
+    const cloudResult = await saveDailyToCloud(payload);
+    await saveAIStateToCloud();
+    console.log("Supabase daily_logs inserted:", cloudResult);
+    cloudOK = true;
+  } catch (err) {
+    console.error("Cloud sync failed:", err);
+    setCloudStatus("❌ 雲端同步失敗：請看 Console 紅字");
+  }
+
+  if (localOK && cloudOK) {
+    showToast("✅ 已同步到 My Life OS + Cloud");
+    setCloudStatus(`✅ 本機與 Supabase 皆已同步｜Day ${day}`);
+  } else if (cloudOK) {
+    showToast("✅ 已同步到 Cloud");
+    setCloudStatus(`✅ 已同步到 Supabase｜Day ${day}`);
+  } else if (localOK) {
+    showToast("✅ 已同步到本機 My Life OS");
+    setCloudStatus("⚠️ 本機已同步，雲端失敗");
+  } else {
+    showToast("❌ 同步失敗");
+    setCloudStatus("❌ 本機與雲端都未同步成功");
+  }
+}
+
+
+const IS_LOCAL_DASHBOARD = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+
+// ========================
+// SUPABASE CLOUD SYNC v5
+// ========================
+const SUPABASE_REST_URL = "https://gctlnjetbiyolhqghlmm.supabase.co/rest/v1";
+const SUPABASE_KEY = "sb_publishable_Vv-GMzmC-QmHmfZoP5X2HA_hp3b0iwV";
+
+function setCloudStatus(msg) {
+  const el = document.getElementById("cloudStatus");
+  if (el) el.textContent = msg;
+}
+
+async function supabaseRequest(table, options = {}) {
+  const url = `${SUPABASE_REST_URL}/${table}${options.query || ""}`;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 12000);
+
+  try {
+    const res = await fetch(url, {
+      method: options.method || "GET",
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": `Bearer ${SUPABASE_KEY}`,
+        "Content-Type": "application/json",
+        "Prefer": options.prefer || "return=representation"
+      },
+      body: options.body ? JSON.stringify(options.body) : undefined,
+      signal: controller.signal
+    });
+
+    clearTimeout(timer);
+
+    if (!res.ok) {
+      const text = await res.text();
+      console.error("Supabase request failed:", res.status, text);
+      throw new Error(text || `Supabase error ${res.status}`);
+    }
+
+    if (res.status === 204) return null;
+    return await res.json();
+  } catch (err) {
+    clearTimeout(timer);
+    console.error("Supabase request error:", err);
+    throw err;
+  }
+}
+
+async function saveDailyToCloud(payload) {
+  const row = {
+    day: payload.day,
+    content: JSON.stringify(payload),
+    source: "dashboard-v5"
+  };
+
+  await supabaseRequest("daily_logs", {
+    method: "POST",
+    body: row
+  });
+}
+
+async function saveWeeklyToCloud(payload) {
+  await supabaseRequest("weekly_reviews", {
+    method: "POST",
+    body: {
+      week: payload.week,
+      q1: payload.q1 || "",
+      q2: payload.q2 || "",
+      q3: payload.q3 || "",
+      q4: payload.q4 || ""
+    }
+  });
+}
+
+async function saveAIStateToCloud() {
+  await supabaseRequest("ai_state", {
+    method: "POST",
+    body: {
+      level: 1,
+      xp: 0,
+      streak: state.streak || 0,
+      current_day: state.currentDay || 1
+    }
+  });
+}
+
+async function loadLatestCloudState() {
+  try {
+    const rows = await supabaseRequest("daily_logs", {
+      query: "?select=*&order=created_at.desc&limit=7"
+    });
+
+    if (Array.isArray(rows) && rows.length) {
+      const latest = rows[0];
+      if (latest.day && latest.day > 0) {
+        state.currentDay = latest.day;
+        saveState();
+        updateUI();
+      }
+
+      updateCloudAICore(rows);
+      setCloudStatus(`✅ 已連接 Supabase｜雲端最近紀錄 Day ${latest.day || "-"}`);
+    } else {
+      setCloudStatus("✅ 已連接 Supabase｜目前尚無雲端紀錄");
+    }
+  } catch (err) {
+    console.error("Cloud load failed:", err);
+    setCloudStatus("⚠️ Supabase 讀取失敗，請確認 SQL 權限是否已完成");
+  }
+}
+
+function updateCloudAICore(rows) {
+  try {
+    const parsed = rows
+      .map(r => {
+        try { return JSON.parse(r.content || "{}"); }
+        catch (e) { return null; }
+      })
+      .filter(Boolean);
+
+    if (!parsed.length) return;
+
+    const latest = parsed[0];
+    const combined = parsed.map(x => [
+      x.learned || "",
+      x.result || "",
+      x.problem || "",
+      x.nextStep || ""
+    ].join("\n")).join("\n");
+
+    const outputCount = (combined.match(/輸出|成果|作品|腳本|貼文|短影音|完成/g) || []).length;
+    const learningCount = (combined.match(/學|研究|工具|閱讀|筆記|看影片/g) || []).length;
+    const moneyCount = (combined.match(/變現|收入|服務|產品|模板|賣|客戶/g) || []).length;
+
+    const onlyMission = latest.nextStep || "完成一個可保存、可展示的 AI 輸出";
+    const trend = `雲端最近紀錄：學習 ${learningCount}｜輸出 ${outputCount}｜變現 ${moneyCount}`;
+    const bottleneck = learningCount > outputCount ? "吸收偏多，輸出偏少" : "目前節奏尚可";
+    const drift = outputCount === 0 ? "主線偏移風險：最近缺少可見輸出" : "主線尚可";
+
+    const setText = (id, value) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    };
+
+    setText("coreOnlyMission", onlyMission);
+    setText("coreTrend", trend);
+    setText("coreBottleneck", bottleneck);
+    setText("coreDrift", drift);
+    setText("coreBestAction", `用 30 分鐘完成：「${onlyMission}」，並同步到雲端。`);
+    setText("coreForbidden", "不要只研究工具；不要只整理系統；不要拖延輸出");
+    setText("coreRisk", outputCount === 0 ? "如果今天沒有產出，90 天計畫會變成純學習。" : "注意不要讓系統優化取代主線行動。");
+
+    const coach = document.getElementById("aiCoachTalk");
+    if (coach) {
+      coach.textContent = `雲端主腦判斷：${bottleneck}。今天唯一主線：${onlyMission}。`;
+    }
+  } catch (err) {
+    console.error("Cloud AI core failed:", err);
+  }
+}
+
+async function loadAIMission() {
+  if (!IS_LOCAL_DASHBOARD) return;
+  try {
+    const res = await fetch("http://localhost:3000/ai-daily-plan");
+    const data = await res.json();
+
+    if (!data.success) return;
+
+    document.getElementById("aiPriorityTask").textContent = data.priority || "完成今日核心任務";
+    document.getElementById("aiReason").textContent = data.reason || "根據目前 My Life OS 狀態判斷";
+    document.getElementById("aiTime").textContent = data.time || "11:30–11:50";
+    document.getElementById("aiAction").textContent = data.action || "完成今日學習、實作與紀錄";
+
+    const avoid = document.getElementById("aiAvoid");
+    const output = document.getElementById("aiOutput");
+    const monetize = document.getElementById("aiMonetize");
+
+    if (avoid) avoid.textContent = data.avoid || "避免只看內容、不做輸出。";
+    if (output) output.textContent = data.output || "完成一則可保存到作品區的輸出。";
+    if (monetize) monetize.textContent = data.monetize || "把今天的成果往可展示、可服務、可販售方向整理。";
+
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+async function initDashboard() {
+  if (IS_LOCAL_DASHBOARD) {
+    try {
+      const res = await fetch("http://localhost:3000/read-daily");
+      const data = await res.json();
+
+      if (data.success && data.latestDay > 0) {
+        state.currentDay = data.latestDay;
+        saveState();
+      }
+    } catch (err) {}
+  }
+
+  updateUI();
+  loadAIMission();
+  if (typeof loadLatestCloudState === 'function') loadLatestCloudState();
+
+setTimeout(() => {
+ const coach=document.getElementById("aiCoachTalk");
+ if(coach){
+   coach.textContent="今天不要亂學新東西。先完成唯一主線任務，並做出一個可保存、可展示、可變現的成果。";
+ }
+},500);
+}
+
+
+async function organizeMyLifeOS() {
+  const resultEl = document.getElementById("organizerResult");
+  if (!IS_LOCAL_DASHBOARD) {
+    if (resultEl) resultEl.textContent = "雲端版目前以 Supabase 同步為主；自動整理 My Life OS 檔案請回電腦本機版執行。";
+    showToast("雲端版不執行本機檔案整理");
+    return;
+  }
+  if (resultEl) resultEl.textContent = "整理中...";
+
+  try {
+    const res = await fetch("http://localhost:3000/organize-os", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
+      }
     });
 
-    if (res.ok) {
-      showToast("✅ 已同步到 My Life OS");
+    const data = await res.json();
+
+    if (data.success) {
+      const msg = `✅ 整理完成：新增 ${data.created.length} 個整理項目，更新 ${data.updated.length} 個檔案`;
+      if (resultEl) resultEl.textContent = msg;
+      showToast("✅ My Life OS 已整理");
     } else {
-      showToast("❌ 同步失敗");
+      if (resultEl) resultEl.textContent = "❌ 整理失敗：" + (data.error || "未知錯誤");
+      showToast("❌ 整理失敗");
     }
   } catch (err) {
     console.error(err);
-    showToast("❌ 連線錯誤");
+    if (resultEl) resultEl.textContent = "❌ Server 未連線";
+    showToast("❌ Server 未連線");
   }
+}
+
+
+
+function debounce(fn, delay) {
+  let timer;
+  return function(...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
+async function loadRPGStats() {
+  try {
+    const res = await fetch("http://localhost:3000/rpg-stats");
+    const data = await res.json();
+    if (!data.success) return;
+
+    const level = document.getElementById("rpgLevel");
+    const title = document.getElementById("rpgTitle");
+    const xp = document.getElementById("rpgXP");
+    const fill = document.getElementById("rpgFill");
+
+    if (level) level.textContent = "LV." + data.level;
+    if (title) title.textContent = data.title;
+    if (xp) xp.textContent = data.currentLevelXP + " / 100 XP";
+    if (fill) fill.style.width = data.progress + "%";
+
+    const achDaily = document.getElementById("achDaily");
+    const achTasks = document.getElementById("achTasks");
+    const achWeekly = document.getElementById("achWeekly");
+    const achOutput = document.getElementById("achOutput");
+
+    if (achDaily && data.achievements.daily) achDaily.classList.add("done");
+    if (achTasks && data.achievements.tasks) achTasks.classList.add("done");
+    if (achWeekly && data.achievements.weekly) achWeekly.classList.add("done");
+    if (achOutput && data.achievements.output) achOutput.classList.add("done");
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+const autoSaveDaily = debounce(async () => {
+  const status = document.getElementById("autoSaveStatus");
+  if (status) status.textContent = "自動存檔中...";
+
+  try {
+    await syncToOS();
+    await loadRPGStats();
+    if (status) status.textContent = "✅ 已自動存檔";
+  } catch (err) {
+    if (status) status.textContent = "⚠️ 自動存檔失敗";
+  }
+}, 1200);
+
+function bindAutoSave() {
+  ["learnedInput", "resultInput", "problemInput", "nextStepInput"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("input", autoSaveDaily);
+      el.addEventListener("blur", autoSaveDaily);
+    }
+  });
+
+  ["wq1", "wq2", "wq3", "wq4"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("input", debounce(saveWeekly, 1500));
+      el.addEventListener("blur", saveWeekly);
+    }
+  });
+}
+
+const originalToggleSlot = typeof toggleSlot === "function" ? toggleSlot : null;
+if (originalToggleSlot) {
+  toggleSlot = function(el, idx) {
+    originalToggleSlot(el, idx);
+    autoSaveDaily();
+    loadRPGStats();
+  };
+}
+
+const originalToggleCheck = typeof toggleCheck === "function" ? toggleCheck : null;
+if (originalToggleCheck) {
+  toggleCheck = function(el) {
+    originalToggleCheck(el);
+    autoSaveDaily();
+    loadRPGStats();
+  };
 }
 
 // ========================
 // INIT
 // ========================
 
-updateUI();
+initDashboard();
 </script>
 </body>
 </html>

@@ -1,0 +1,10 @@
+{
+  "name": "My Life OS",
+  "short_name": "Life OS",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#00e5ff",
+  "description": "My Life OS Dashboard with AI Core and Cloud Sync",
+  "icons": []
+}
