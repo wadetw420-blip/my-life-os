@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>90天 AI 作戰系統</title>
+<title>My Life OS v7.5 HUD｜90天 AI 作戰系統</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -805,12 +805,531 @@
     text-align:center;
   }
 
+
+/* ===== CLOUD BRAIN V7 PATCH ===== */
+#cloudBrainCard {
+  border-color: rgba(0,229,255,.32) !important;
+  box-shadow: 0 0 34px rgba(0,229,255,.08), inset 0 0 0 1px rgba(255,255,255,.03) !important;
+}
+#cloudBrainCard .save-btn {
+  font-size: 12px !important;
+  padding: 11px 8px !important;
+}
+@media (max-width: 520px) {
+  #cloudBrainCard > div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
+/* ===== V7.1 COMPACT CHARACTER HUD ===== */
+.character-hud {
+  background: linear-gradient(135deg, rgba(0,229,255,.08), rgba(124,58,237,.10), rgba(0,212,170,.06));
+  border: 1px solid rgba(0,229,255,.22);
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 0 36px rgba(0,229,255,.07), inset 0 0 0 1px rgba(255,255,255,.025);
+}
+
+.hud-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.hud-title-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .22em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.hud-title {
+  font-size: 23px;
+  font-weight: 800;
+  line-height: 1.15;
+  color: #fff;
+}
+
+.hud-day {
+  min-width: 72px;
+  border-radius: 14px;
+  padding: 10px 12px;
+  text-align: center;
+  background: linear-gradient(135deg, var(--accent2), var(--accent));
+  box-shadow: 0 0 22px rgba(0,229,255,.18);
+}
+
+.hud-day-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  color: #fff;
+}
+
+.hud-day-label {
+  font-size: 11px;
+  letter-spacing: .18em;
+  color: rgba(255,255,255,.75);
+}
+
+.hud-progress {
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.hud-progress-fill {
+  height: 100%;
+  width: 1%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+}
+
+.hud-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.hud-meta {
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(0,229,255,.12);
+  border-radius: 12px;
+  padding: 9px 10px;
+  min-height: 58px;
+}
+
+.hud-meta-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: .16em;
+  color: var(--text3);
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.hud-meta-value {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--text);
+}
+
+.hud-meta-value.accent { color: var(--accent); }
+.hud-meta-value.amber { color: var(--accent3); }
+
+.hud-xp-bar {
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  overflow: hidden;
+  margin-top: 7px;
+}
+
+.hud-xp-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent3), var(--accent));
+}
+
+.header,
+#cloudStatusCard,
+.streak-banner,
+.rpg-card,
+.phase-banner {
+  display: none !important;
+}
+
+@media (max-width: 640px) {
+  .character-hud { padding: 14px; }
+  .hud-title { font-size: 21px; }
+  .hud-day { min-width: 64px; padding: 9px 10px; }
+  .hud-day-num { font-size: 30px; }
+  .hud-meta-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+
+/* ===== V7.2 CLEAR TOP HUD + ARCHIVE PANEL ===== */
+.character-hud {
+  background:
+    linear-gradient(135deg, rgba(0,229,255,.12), rgba(124,58,237,.13), rgba(0,212,170,.08)) !important;
+  border: 1px solid rgba(0,229,255,.35) !important;
+  border-radius: 22px !important;
+  padding: 18px !important;
+  margin-bottom: 16px !important;
+  box-shadow: 0 0 42px rgba(0,229,255,.10), inset 0 0 0 1px rgba(255,255,255,.04) !important;
+}
+.hud-top {
+  display:flex !important;
+  justify-content:space-between !important;
+  align-items:center !important;
+  gap:14px !important;
+  margin-bottom:14px !important;
+}
+.hud-title-label {
+  font-size:10px !important;
+  letter-spacing:.18em !important;
+  color:var(--accent) !important;
+  margin-bottom:8px !important;
+}
+.hud-title {
+  font-size:24px !important;
+  line-height:1.15 !important;
+  letter-spacing:-.02em !important;
+}
+.hud-subtitle {
+  margin-top:8px;
+  font-size:12px;
+  color:var(--text2);
+  line-height:1.5;
+}
+.hud-day {
+  min-width:76px !important;
+  border-radius:18px !important;
+  padding:11px 12px !important;
+}
+.hud-day-num { font-size:36px !important; }
+.hud-progress {
+  height:8px !important;
+  margin:12px 0 12px !important;
+}
+.hud-meta-grid {
+  display:grid !important;
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  gap:9px !important;
+}
+.hud-meta {
+  background:rgba(2,6,23,.55) !important;
+  border:1px solid rgba(0,229,255,.18) !important;
+  border-radius:15px !important;
+  padding:11px 10px !important;
+  min-height:72px !important;
+}
+.hud-meta-label {
+  font-size:9px !important;
+  color:var(--text3) !important;
+  margin-bottom:7px !important;
+}
+.hud-meta-value {
+  font-size:15px !important;
+  line-height:1.3 !important;
+}
+.hud-meta-hint {
+  font-size:10px;
+  color:var(--text3);
+  margin-top:4px;
+  line-height:1.35;
+}
+.archive-panel {
+  border-color:rgba(0,212,170,.32) !important;
+  background:linear-gradient(135deg, rgba(0,212,170,.07), rgba(0,229,255,.06)) !important;
+}
+.archive-actions {
+  display:grid;
+  grid-template-columns:1fr;
+  gap:9px;
+  margin-top:12px;
+}
+.archive-actions .save-btn { margin-top:0 !important; }
+.archive-help {
+  display:grid;
+  grid-template-columns:1fr;
+  gap:8px;
+  margin-top:12px;
+}
+.archive-help-item {
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(0,229,255,.12);
+  border-radius:12px;
+  padding:10px;
+}
+.archive-help-title {
+  font-size:12px;
+  font-weight:700;
+  color:var(--accent);
+  margin-bottom:4px;
+}
+.archive-help-text {
+  font-size:11px;
+  color:var(--text2);
+  line-height:1.55;
+}
+#organizerCard { display:none !important; }
+#standaloneSyncBlock { display:none !important; }
+@media (max-width:640px) {
+  .character-hud { padding:16px !important; }
+  .hud-title { font-size:22px !important; }
+  .hud-subtitle { font-size:11px; }
+  .hud-meta-grid { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+  .hud-meta { min-height:76px !important; }
+}
+@media (min-width:720px) {
+  .archive-actions { grid-template-columns:repeat(3,1fr); }
+}
+
+
+/* ===== V7.3 EXECUTION PANEL REORDER ===== */
+#aiCoachTalkBlock,
+#dailyProgressBlock,
+#fixedScheduleTitle,
+#timeSlotsBlock,
+#extraGoalsDivider,
+#extraGoalsTitle,
+#extraChecklistBlock {
+  display:none !important;
+}
+.execution-panel {
+  border-color: rgba(124,58,237,.28) !important;
+  background: linear-gradient(135deg, rgba(124,58,237,.08), rgba(0,229,255,.05)) !important;
+}
+.execution-section {
+  margin-top: 14px;
+}
+.execution-section:first-child {
+  margin-top: 0;
+}
+.execution-section-title {
+  font-family:'JetBrains Mono', monospace;
+  font-size:10px;
+  color:var(--accent);
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  margin-bottom:9px;
+}
+.execution-coach {
+  background:rgba(124,58,237,.08);
+  border:1px solid rgba(124,58,237,.25);
+  border-radius:12px;
+  padding:12px;
+  font-size:13px;
+  line-height:1.7;
+  color:var(--text);
+}
+.execution-progress-row {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:8px;
+}
+.execution-progress-pct {
+  font-family:'JetBrains Mono', monospace;
+  font-size:22px;
+  font-weight:800;
+  color:var(--accent);
+}
+.execution-progress-bar {
+  height:7px;
+  background:var(--border);
+  border-radius:999px;
+  overflow:hidden;
+}
+.execution-progress-fill {
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border-radius:999px;
+}
+.execution-panel .slot {
+  background:rgba(255,255,255,.025) !important;
+  border:1px solid rgba(0,229,255,.12) !important;
+  border-radius:14px !important;
+  padding:12px !important;
+  margin-bottom:8px !important;
+}
+.execution-panel .check-item {
+  background:rgba(255,255,255,.02);
+  border:1px solid rgba(0,229,255,.10);
+  border-radius:12px;
+  padding:11px 10px;
+  margin-bottom:8px;
+}
+@media (max-width:640px){
+  .execution-coach { font-size:12px; }
+}
+
+
+/* ===== V7.5 ARCHIVE PANEL FIX + RPG TASK SPACING ===== */
+.archive-panel {
+  border-color: rgba(0,212,170,.42) !important;
+  background:
+    linear-gradient(135deg, rgba(0,212,170,.09), rgba(0,229,255,.07), rgba(124,58,237,.05)) !important;
+}
+.archive-panel .focus-theme {
+  font-size: 17px !important;
+  line-height: 1.45 !important;
+}
+.archive-help {
+  gap: 10px !important;
+  margin-top: 14px !important;
+}
+.archive-help-item {
+  position: relative;
+  overflow: hidden;
+  background: rgba(2,6,23,.42) !important;
+  border: 1px solid rgba(0,229,255,.16) !important;
+  border-radius: 14px !important;
+  padding: 12px !important;
+}
+.archive-help-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--accent), var(--accent2));
+}
+.archive-help-title {
+  font-size: 13px !important;
+  color: var(--accent) !important;
+  margin-bottom: 6px !important;
+}
+.archive-help-text {
+  font-size: 11.5px !important;
+  line-height: 1.65 !important;
+}
+.archive-actions {
+  gap: 10px !important;
+  margin-top: 14px !important;
+}
+.archive-actions .save-btn {
+  min-height: 44px;
+  border-radius: 13px !important;
+}
+.execution-panel {
+  padding: 17px !important;
+}
+.execution-section {
+  margin-top: 18px !important;
+}
+.execution-section:first-child {
+  margin-top: 0 !important;
+}
+.execution-section-title {
+  margin-bottom: 10px !important;
+}
+.execution-coach {
+  border-radius: 14px !important;
+  padding: 13px !important;
+}
+.execution-panel .slot,
+.execution-panel .check-item {
+  margin-bottom: 10px !important;
+  border-radius: 14px !important;
+}
+.execution-panel .slot:last-child,
+.execution-panel .check-item:last-child {
+  margin-bottom: 0 !important;
+}
+@media (min-width:720px) {
+  .archive-actions { grid-template-columns:repeat(3,1fr) !important; }
+  .archive-help { grid-template-columns:1fr !important; }
+}
+
+
+/* ===== V7.5 MERGED DAILY LOG + ARCHIVE SYNC ===== */
+.daily-archive-card {
+  border-color: rgba(0,229,255,.22) !important;
+  background: linear-gradient(135deg, rgba(17,17,24,.96), rgba(0,212,170,.035), rgba(124,58,237,.035)) !important;
+}
+.daily-archive-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 9px;
+  margin-top: 14px;
+}
+.daily-archive-actions .save-btn {
+  margin-top: 0 !important;
+  min-height: 42px;
+  border-radius: 12px !important;
+}
+.daily-archive-note {
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.75;
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(0,212,170,.04);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+}
+.daily-archive-status {
+  font-size: 12px;
+  color: var(--accent);
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: rgba(0,212,170,.05);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+  font-style: italic;
+}
+@media (min-width:720px) {
+  .daily-archive-actions {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 </style>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#00e5ff">
 </head>
 <body>
 <div class="app">
+
+
+  <!-- CHARACTER HUD -->
+  <div class="character-hud" id="characterHud">
+    <div class="hud-top">
+      <div>
+        <div class="hud-title-label">⬡ My Life OS · Cloud Brain V7.5</div>
+        <div class="hud-title">90天 AI 作戰系統</div>
+        <div class="hud-subtitle">雲端主腦 · 每日紀錄 · 週回顧 · RPG 成長狀態</div>
+      </div>
+      <div class="hud-day">
+        <div class="hud-day-num" id="hudDay">1</div>
+        <div class="hud-day-label">DAY</div>
+      </div>
+    </div>
+
+    <div class="hud-progress">
+      <div class="hud-progress-fill" id="hudMainBar"></div>
+    </div>
+
+    <div class="hud-meta-grid">
+      <div class="hud-meta">
+        <div class="hud-meta-label">雲端狀態</div>
+        <div class="hud-meta-value accent" id="hudCloud">連線中</div>
+        <div class="hud-meta-hint">Supabase 同步</div>
+      </div>
+      <div class="hud-meta">
+        <div class="hud-meta-label">連續完成</div>
+        <div class="hud-meta-value amber"><span id="hudStreak">0</span> 天</div>
+        <div class="hud-meta-hint">保持節奏</div>
+      </div>
+      <div class="hud-meta">
+        <div class="hud-meta-label">角色等級</div>
+        <div class="hud-meta-value accent" id="hudLevel">LV.1</div>
+        <div class="hud-xp-bar"><div class="hud-xp-fill" id="hudXpFill"></div></div>
+      </div>
+      <div class="hud-meta">
+        <div class="hud-meta-label">目前階段</div>
+        <div class="hud-meta-value" id="hudPhase">建立習慣</div>
+        <div class="hud-meta-hint" id="hudPhaseHint">Day 1–30</div>
+      </div>
+    </div>
+  </div>
 
   <!-- HEADER -->
   <div class="header">
@@ -846,10 +1365,9 @@
   <div class="focus-card" id="cloudStatusCard" style="padding:12px 14px;margin-bottom:16px">
     <div class="card-label" style="margin-bottom:6px">Cloud Sync</div>
     <div id="cloudStatus" style="font-size:12px;color:var(--text2);line-height:1.5">
-      Supabase 雲端同步待命中
+      Supabase Cloud Brain 待命中
     </div>
   </div>
-
   <!-- TODAY PANEL -->
   <div class="panel active" id="panel-today">
 
@@ -913,10 +1431,10 @@
 
     <!-- AI Mission Engine -->
     <div class="focus-card" id="aiMissionCard">
-      <div class="card-label">AI 雲端主腦 v6.1</div>
+      <div class="card-label">AI 雲端主腦 v7</div>
 
       <div style="font-size:11px;color:var(--text3);margin-bottom:8px">
-        讀取：Supabase 雲端每日紀錄 / 週回顧 / AI 狀態
+        讀取：Supabase Cloud Brain / 每日紀錄 / 週回顧 / AI 狀態
       </div>
 
       <div class="focus-theme" id="aiPriorityTask">分析中...</div>
@@ -953,8 +1471,87 @@
       </div>
     </div>
 
+
+    <!-- Integrated Execution Panel -->
+    <div class="focus-card execution-panel" id="executionPanel">
+      <div class="card-label">今日執行面板</div>
+
+      <div class="execution-section">
+        <div class="execution-section-title">AI 教練直話</div>
+        <div class="execution-coach" id="aiCoachTalkMirror">
+          正在分析你目前的人生主線與進度...
+        </div>
+      </div>
+
+      <div class="execution-section">
+        <div class="execution-progress-row">
+          <div class="execution-section-title" style="margin-bottom:0">今日進度</div>
+          <div class="execution-progress-pct" id="dpPctMirror">0%</div>
+        </div>
+        <div class="execution-progress-bar">
+          <div class="execution-progress-fill" id="dpFillMirror"></div>
+        </div>
+      </div>
+
+      <div class="execution-section">
+        <div class="execution-section-title">固定時間表</div>
+        <div class="time-slots" id="timeSlotsMirror">
+          <div class="slot" onclick="toggleSlot(this, 0)">
+            <div class="slot-check"></div>
+            <div class="slot-content">
+              <div class="slot-time">11:00 – 11:30</div>
+              <div class="slot-title">今日主題學習</div>
+              <div class="slot-desc">閱讀、看影片或研究核心概念</div>
+            </div>
+          </div>
+          <div class="slot" onclick="toggleSlot(this, 1)">
+            <div class="slot-check"></div>
+            <div class="slot-content">
+              <div class="slot-time">11:30 – 11:50</div>
+              <div class="slot-title">實作練習</div>
+              <div class="slot-desc">動手操作、測試工具或寫 Prompt</div>
+            </div>
+          </div>
+          <div class="slot" onclick="toggleSlot(this, 2)">
+            <div class="slot-check"></div>
+            <div class="slot-content">
+              <div class="slot-time">20:30 – 21:00</div>
+              <div class="slot-title">輸出內容或筆記</div>
+              <div class="slot-desc">整理今日學習，寫一篇短文或筆記</div>
+            </div>
+          </div>
+          <div class="slot" onclick="toggleSlot(this, 3)">
+            <div class="slot-check"></div>
+            <div class="slot-content">
+              <div class="slot-time">21:00 – 21:20</div>
+              <div class="slot-title">更新每日記錄</div>
+              <div class="slot-desc">同步到 Supabase 雲端主腦</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="execution-section">
+        <div class="execution-section-title">今日附加目標</div>
+        <div class="checklist" id="extraChecklistMirror">
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="ci-box"></div>
+            <div class="ci-text">完成至少一個 Prompt 實作</div>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="ci-box"></div>
+            <div class="ci-text">把今日成果同步到雲端主腦</div>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="ci-box"></div>
+            <div class="ci-text">寫下明日唯一主線（1句話）</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     
-<div style="margin-top:12px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.25);border-radius:10px;padding:12px">
+<div id="aiCoachTalkBlock" style="margin-top:12px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.25);border-radius:10px;padding:12px">
   <div style="font-size:10px;letter-spacing:.12em;color:var(--accent2);margin-bottom:6px">
     AI 教練直話
   </div>
@@ -964,7 +1561,7 @@
 </div>
 
 <!-- Daily Tasks -->
-    <div class="daily-progress">
+    <div class="daily-progress" id="dailyProgressBlock">
       <div class="dp-top">
         <span class="card-label" style="margin:0">今日進度</span>
         <span class="dp-pct" id="dpPct">0%</span>
@@ -974,9 +1571,9 @@
       </div>
     </div>
 
-    <div class="section-title">固定時間表</div>
+    <div class="section-title" id="fixedScheduleTitle">固定時間表</div>
 
-    <div class="time-slots" id="timeSlots">
+    <div class="time-slots" id="timeSlotsBlock">
       <div class="slot" onclick="toggleSlot(this, 0)">
         <div class="slot-check"></div>
         <div class="slot-content">
@@ -1011,8 +1608,8 @@
       </div>
     </div>
 
-<!-- Daily Reflection -->
-<div class="focus-card">
+<!-- Daily Reflection + Archive Sync -->
+<div class="focus-card daily-archive-card" id="dailyArchiveCard">
 
   <div class="card-label">
     每日紀錄
@@ -1026,7 +1623,7 @@
     <textarea
       id="learnedInput"
       class="week-input"
-      placeholder="例如：學會讓 Dashboard 寫入 md..."
+      placeholder="例如：今天學會了哪個 AI 工具、流程或方法..."
     ></textarea>
   </div>
 
@@ -1038,7 +1635,7 @@
     <textarea
       id="resultInput"
       class="week-input"
-      placeholder="例如：成功完成本地同步系統"
+      placeholder="例如：完成一個可保存、可展示或可變現的成果..."
     ></textarea>
   </div>
 
@@ -1050,11 +1647,11 @@
     <textarea
       id="problemInput"
       class="week-input"
-      placeholder="例如：路徑設定一直錯"
+      placeholder="例如：今天卡住的地方、原因或需要修正的點..."
     ></textarea>
   </div>
 
-  <div>
+  <div style="margin-bottom:14px">
     <div style="font-size:12px;margin-bottom:6px;color:var(--text2)">
       下一步
     </div>
@@ -1062,44 +1659,51 @@
     <textarea
       id="nextStepInput"
       class="week-input"
-      placeholder="例如：讓 Dashboard 自動更新更多 md"
+      placeholder="例如：明天最重要的一個行動..."
     ></textarea>
   </div>
 
+  <div class="divider"></div>
+
+  <div class="card-label">
+    My Life OS 自動歸檔和同步
+  </div>
+
+  <div class="daily-archive-actions">
+    <button class="save-btn" onclick="syncToOS()">💾 同步今日紀錄</button>
+    <button class="save-btn" onclick="saveCloudBrainProfile()">☁️ 同步主腦狀態</button>
+    <button class="save-btn" onclick="exportMyLifeOSMarkdown()">📦 匯出 MD 備份</button>
+  </div>
+
+  <div class="daily-archive-note">
+    平常操作以「同步今日紀錄」為主；需要更新系統狀態時按「同步主腦狀態」；需要長期保存或丟給其他 AI 使用時，再「匯出 MD 備份」。
+  </div>
+
+  <div class="daily-archive-status" id="cloudBrainStatus">
+    Cloud Brain 待命中
+  </div>
+
 </div>
 
-
-<!-- Auto Organizer -->
-<div class="focus-card" id="organizerCard">
-  <div class="card-label">自動整理資料夾 v1</div>
-  <div class="focus-theme">My Life OS 自動歸檔</div>
-  <div style="font-size:12px;color:var(--text2);line-height:1.6;margin:8px 0">
-    將最近每日紀錄與週回顧中的內容，整理成「內容素材 / 商業想法 / SOP / 資產報告」。
-  </div>
-  <button class="save-btn" onclick="organizeMyLifeOS()">🗂️ 自動整理 My Life OS</button>
-  <div class="focus-question" id="organizerResult" style="margin-top:10px">
-    尚未執行整理
-  </div>
-</div>
 
     <!-- Extra checklist -->
-    <div class="divider"></div>
-    <div class="section-title">今日附加目標</div>
-    <div class="checklist" id="extraChecklist">
+    <div class="divider" id="extraGoalsDivider"></div>
+    <div class="section-title" id="extraGoalsTitle">今日附加目標</div>
+    <div class="checklist" id="extraChecklistBlock">
       <div class="check-item" onclick="toggleCheck(this)">
         <div class="ci-box"></div>
         <div class="ci-text">完成至少一個 Prompt 實作</div>
       </div>
       <div class="check-item" onclick="toggleCheck(this)">
         <div class="ci-box"></div>
-        <div class="ci-text">更新工具筆記.md</div>
+        <div class="ci-text">把今日成果同步到雲端主腦</div>
       </div>
       <div class="check-item" onclick="toggleCheck(this)">
         <div class="ci-box"></div>
-        <div class="ci-text">寫下明日計劃（1句話）</div>
+        <div class="ci-text">寫下明日唯一主線（1句話）</div>
       </div>
     </div>
-	<div style="margin-top:16px">
+	<div style="margin-top:16px" id="standaloneSyncBlock">
   	<button class="save-btn" onclick="syncToOS()">
     	🔄 同步今日紀錄到 My Life OS
   	</button>
@@ -1469,6 +2073,7 @@ function renderSlots() {
     if (slotStates[i]) slot.classList.add('done');
     else slot.classList.remove('done');
   });
+  if (typeof syncExecutionPanelMirror === 'function') syncExecutionPanelMirror();
 }
 
 function updateDailyProgress() {
@@ -1476,6 +2081,8 @@ function updateDailyProgress() {
   const pct = Math.round((done / 4) * 100);
   document.getElementById('dpPct').textContent = pct + '%';
   document.getElementById('dpFill').style.width = pct + '%';
+
+  if (typeof syncExecutionPanelMirror === 'function') syncExecutionPanelMirror();
 
   if (pct === 100) {
     markDayComplete();
@@ -1587,6 +2194,7 @@ async function saveWeekly() {
     });
     if (typeof loadRPGStats === 'function') loadRPGStats();
     if (typeof loadLatestCloudState === 'function') loadLatestCloudState();
+  if (typeof loadCloudBrainProfile === 'function') loadCloudBrainProfile();
   } else {
     showToast('❌ 週回顧同步失敗');
   }
@@ -1708,6 +2316,17 @@ const SUPABASE_KEY = "sb_publishable_Vv-GMzmC-QmHmfZoP5X2HA_hp3b0iwV";
 function setCloudStatus(msg) {
   const el = document.getElementById("cloudStatus");
   if (el) el.textContent = msg;
+
+  const hud = document.getElementById("hudCloud");
+  if (hud) {
+    if (String(msg).includes("已連接") || String(msg).includes("已同步") || String(msg).includes("Supabase")) {
+      hud.textContent = "已連接";
+    } else if (String(msg).includes("失敗")) {
+      hud.textContent = "需檢查";
+    } else {
+      hud.textContent = "同步中";
+    }
+  }
 }
 
 async function supabaseRequest(table, options = {}) {
@@ -1852,6 +2471,7 @@ function updateCloudAICore(rows) {
     const coach = document.getElementById("aiCoachTalk");
     if (coach) {
       coach.textContent = `雲端主腦判斷：${bottleneck}。今天唯一主線：${onlyMission}。`;
+      if (typeof syncExecutionPanelMirror === "function") syncExecutionPanelMirror();
     }
 
     setText("aiPriorityTask", onlyMission);
@@ -1863,6 +2483,143 @@ function updateCloudAICore(rows) {
     setText("aiMonetize", moneyCount === 0 ? "把今天成果命名成一個小服務、模板或作品案例。" : "延續既有變現線索，做一次小測試。");
   } catch (err) {
     console.error("Cloud AI core failed:", err);
+  }
+}
+
+
+async function saveCloudBrainProfile() {
+  const status = document.getElementById("cloudBrainStatus");
+  if (status) status.textContent = "同步 Cloud Brain 中...";
+
+  try {
+    const profile = {
+      version: "My Life OS v7 Cloud Brain",
+      life_goal: "建立自由收入、可移動生活、高自主性工作模式",
+      system_mode: "Supabase-first; Markdown files are backup/export layer",
+      current_day: state.currentDay || 1,
+      updated_at_text: new Date().toISOString()
+    };
+
+    await supabaseRequest("life_core", {
+      method: "POST",
+      body: profile
+    });
+
+    if (status) status.textContent = "✅ Cloud Brain 主腦狀態已同步";
+    showToast("✅ Cloud Brain 已同步");
+  } catch (err) {
+    console.error(err);
+    if (status) status.textContent = "❌ Cloud Brain 同步失敗，請確認 v7 SQL 已執行";
+    showToast("❌ Cloud Brain 同步失敗");
+  }
+}
+
+async function exportMyLifeOSMarkdown() {
+  const status = document.getElementById("cloudBrainStatus");
+  if (status) status.textContent = "正在從 Supabase 產生 MD 備份...";
+
+  try {
+    const daily = await supabaseRequest("daily_logs", {
+      query: "?select=*&order=created_at.asc"
+    });
+
+    const weekly = await supabaseRequest("weekly_reviews", {
+      query: "?select=*&order=created_at.asc"
+    });
+
+    const core = await supabaseRequest("life_core", {
+      query: "?select=*&order=created_at.desc&limit=1"
+    });
+
+    const now = new Date().toLocaleString("zh-TW");
+
+    let md = `# My Life OS Cloud Backup\n\n`;
+    md += `Exported At: ${now}\n\n`;
+    md += `## Current System\n`;
+    md += `- Version: My Life OS v7 Cloud Brain\n`;
+    md += `- Main Database: Supabase\n`;
+    md += `- Markdown Role: Backup / Export / Long-term archive\n\n`;
+
+    if (Array.isArray(core) && core.length) {
+      md += `## Life Core\n`;
+      md += `- Life Goal: ${core[0].life_goal || "-"}\n`;
+      md += `- System Mode: ${core[0].system_mode || "-"}\n`;
+      md += `- Current Day: ${core[0].current_day || "-"}\n\n`;
+    }
+
+    md += `## Daily Logs\n\n`;
+    if (Array.isArray(daily) && daily.length) {
+      daily.forEach(row => {
+        let data = {};
+        try { data = JSON.parse(row.content || "{}"); } catch(e) {}
+
+        md += `### Day ${row.day || data.day || "-"}｜${row.created_at || ""}\n\n`;
+        md += `#### 今日主題\n${data.topic || "-"}\n\n`;
+        md += `#### 今天學到什麼\n${data.learned || "-"}\n\n`;
+        md += `#### 今日成果\n${data.result || "-"}\n\n`;
+        md += `#### 遇到的問題\n${data.problem || "-"}\n\n`;
+        md += `#### 下一步\n${data.nextStep || "-"}\n\n---\n\n`;
+      });
+    } else {
+      md += `- 尚無每日紀錄\n\n`;
+    }
+
+    md += `## Weekly Reviews\n\n`;
+    if (Array.isArray(weekly) && weekly.length) {
+      weekly.forEach(row => {
+        md += `### Week ${row.week || "-"}｜${row.created_at || ""}\n\n`;
+        md += `#### 本週完成了什麼\n${row.q1 || "-"}\n\n`;
+        md += `#### 最大收穫\n${row.q2 || "-"}\n\n`;
+        md += `#### 遇到的困難\n${row.q3 || "-"}\n\n`;
+        md += `#### 下週調整策略\n${row.q4 || "-"}\n\n---\n\n`;
+      });
+    } else {
+      md += `- 尚無週回顧\n\n`;
+    }
+
+    const blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const date = new Date().toISOString().slice(0,10);
+    a.href = url;
+    a.download = `MyLifeOS_Cloud_Backup_${date}.md`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+
+    try {
+      await supabaseRequest("system_exports", {
+        method: "POST",
+        body: {
+          export_type: "markdown",
+          summary: `Exported ${daily?.length || 0} daily logs and ${weekly?.length || 0} weekly reviews`
+        }
+      });
+    } catch(e) {
+      console.warn("Export log failed:", e);
+    }
+
+    if (status) status.textContent = "✅ MD 備份已產生並下載";
+    showToast("✅ 已匯出 MD 備份");
+  } catch (err) {
+    console.error(err);
+    if (status) status.textContent = "❌ 匯出失敗，請確認 v7 SQL 已執行";
+    showToast("❌ 匯出失敗");
+  }
+}
+
+async function loadCloudBrainProfile() {
+  try {
+    const rows = await supabaseRequest("life_core", {
+      query: "?select=*&order=created_at.desc&limit=1"
+    });
+    const status = document.getElementById("cloudBrainStatus");
+    if (status && Array.isArray(rows) && rows.length) {
+      status.textContent = `✅ Cloud Brain 已載入｜${rows[0].version || "v7"}｜Day ${rows[0].current_day || "-"}`;
+    }
+  } catch (err) {
+    console.log("Cloud Brain profile not loaded yet:", err.message);
   }
 }
 
@@ -1995,6 +2752,7 @@ async function loadRPGStats() {
     if (achTasks && data.achievements.tasks) achTasks.classList.add("done");
     if (achWeekly && data.achievements.weekly) achWeekly.classList.add("done");
     if (achOutput && data.achievements.output) achOutput.classList.add("done");
+    if (typeof updateCharacterHUD === 'function') updateCharacterHUD();
   } catch (err) {
     console.error(err);
   }
@@ -2047,6 +2805,53 @@ if (originalToggleCheck) {
     autoSaveDaily();
     loadRPGStats();
   };
+}
+
+
+function updateCharacterHUD() {
+  const day = state.currentDay || 1;
+  const pct = Math.round((day / 90) * 100);
+  const phase = getPhase(day);
+
+  const set = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  };
+
+  set("hudDay", day);
+  set("hudStreak", state.streak || 0);
+  set("hudLevel", document.getElementById("rpgLevel")?.textContent || "LV.1");
+  set("hudPhase", phase === 1 ? "建立習慣" : phase === 2 ? "穩定輸出" : "收斂變現");
+  set("hudPhaseHint", phase === 1 ? "Day 1–30" : phase === 2 ? "Day 31–60" : "Day 61–90");
+
+  const bar = document.getElementById("hudMainBar");
+  if (bar) bar.style.width = Math.max(pct, 1.1) + "%";
+
+  const xpText = document.getElementById("rpgXP")?.textContent || "0 / 100 XP";
+  const xpNow = Number((xpText.match(/(\d+)\s*\/\s*100/) || [0,0])[1]);
+  const xpFill = document.getElementById("hudXpFill");
+  if (xpFill) xpFill.style.width = Math.min(100, Math.max(0, xpNow)) + "%";
+}
+
+
+function syncExecutionPanelMirror() {
+  const coach = document.getElementById("aiCoachTalk");
+  const coachMirror = document.getElementById("aiCoachTalkMirror");
+  if (coach && coachMirror) coachMirror.textContent = coach.textContent || "今天先完成唯一主線任務。";
+
+  const dp = document.getElementById("dpPct");
+  const dpMirror = document.getElementById("dpPctMirror");
+  if (dp && dpMirror) dpMirror.textContent = dp.textContent || "0%";
+
+  const fill = document.getElementById("dpFill");
+  const fillMirror = document.getElementById("dpFillMirror");
+  if (fill && fillMirror) fillMirror.style.width = fill.style.width || "0%";
+
+  const mirrorSlots = document.querySelectorAll("#timeSlotsMirror .slot");
+  mirrorSlots.forEach((slot, i) => {
+    if (slotStates[i]) slot.classList.add("done");
+    else slot.classList.remove("done");
+  });
 }
 
 // ========================
