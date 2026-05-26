@@ -230,3 +230,4 @@ ROLE: AI 作戰控制台
 
 Last deploy check: 2026-05-26
 DEPLOY TEST V9.3
+test deploy 9306
