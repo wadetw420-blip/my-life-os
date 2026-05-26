@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Life OS v8｜AI 作戰控制台</title>
+<title>My Life OS v8.6｜AI 作戰控制台</title>
 <!-- v8: external font dependency removed; using system fonts -->
 <style>
   :root {
@@ -1341,10 +1341,96 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Mic
   #cloudStatusCard{display:none;}
 }
 
+
+
+/* ===== V8.6 SMART FLOW / SYNC READINESS ===== */
+.v85-flow{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  margin-top:14px;
+}
+.v85-step{
+  border:1px solid rgba(0,229,255,.14);
+  background:linear-gradient(135deg,rgba(0,229,255,.055),rgba(124,58,237,.045));
+  border-radius:14px;
+  padding:12px;
+  min-height:76px;
+}
+.v85-step-num{
+  font-size:10px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:6px;
+  font-family:'JetBrains Mono',monospace;
+}
+.v85-step-title{
+  font-weight:800;
+  color:var(--text);
+  font-size:13px;
+  margin-bottom:4px;
+}
+.v85-step-desc{
+  color:var(--text2);
+  font-size:11px;
+  line-height:1.55;
+}
+.sync-readiness{
+  margin:14px 0 10px;
+  padding:12px;
+  border:1px solid rgba(0,229,255,.16);
+  border-radius:14px;
+  background:linear-gradient(135deg,rgba(0,229,255,.06),rgba(17,17,24,.72));
+}
+.sync-readiness-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:8px;
+}
+.sync-readiness-title{
+  font-size:10px;
+  color:var(--accent);
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  font-family:'JetBrains Mono',monospace;
+}
+.sync-readiness-score{
+  font-weight:900;
+  color:var(--accent);
+  font-size:18px;
+}
+.sync-readiness-bar{
+  height:7px;
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  overflow:hidden;
+  margin-bottom:8px;
+}
+.sync-readiness-fill{
+  height:100%;
+  width:0%;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--accent2),var(--accent));
+  transition:width .25s ease;
+}
+.sync-readiness-text{
+  font-size:12px;
+  color:var(--text2);
+  line-height:1.55;
+}
+@media (max-width:640px){
+  .v85-flow{grid-template-columns:1fr;gap:8px;margin-top:12px;}
+  .v85-step{min-height:auto;padding:10px 12px;}
+  .sync-readiness{padding:11px;}
+}
+
 </style>
 <!-- v8: manifest disabled to avoid GitHub Pages 404 during dashboard use -->
 <meta name="theme-color" content="#00e5ff">
-<!-- Dashboard v8.1 cleanup: removed duplicated shortcut cards and quick actions; Supabase logic unchanged. -->
+<!-- Dashboard v8.6 smart flow: focused daily flow, sync readiness, Supabase logic unchanged. -->
 </head>
 <body>
 <div class="app">
@@ -1354,7 +1440,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Mic
   <div class="character-hud" id="characterHud">
     <div class="hud-top">
       <div>
-        <div class="hud-title-label">⬡ My Life OS · Cloud Brain V8.1</div>
+        <div class="hud-title-label">⬡ My Life OS · Cloud Brain V8.9</div>
         <div class="hud-title">AI 作戰控制台</div>
         <div class="hud-subtitle">今日主線 · Daily Log · Cloud Brain · 90天變現實驗</div>
       </div>
@@ -1396,7 +1482,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Mic
   <!-- V8 DAILY COMMAND CENTER -->
   <section class="v8-command-center" id="v8CommandCenter">
     <div class="v8-card">
-      <div class="v8-kicker">Today Command Center · v8.2</div>
+      <div class="v8-kicker">Today Command Center · v8.9</div>
       <div class="v8-title">今天只做一件會推進人生主線的事</div>
       <div class="v8-sub">先完成可保存成果，再同步 Cloud Brain。不要只整理系統、不要只研究工具。</div>
       <div class="v8-mission">
@@ -1404,6 +1490,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Mic
         <div class="v8-mission-title" id="v8MissionTitle">讀取 Cloud Brain 中...</div>
       </div>
       <div class="v8-note">完成今日唯一主線後，直接在下方填寫 Daily Log 並同步到 Cloud Brain。</div>
+      <div class="v85-flow" aria-label="今日作戰流程">
+        <div class="v85-step">
+          <div class="v85-step-num">Step 01</div>
+          <div class="v85-step-title">先完成主線</div>
+          <div class="v85-step-desc">只做一個可保存、可展示、可變現的小成果。</div>
+        </div>
+        <div class="v85-step">
+          <div class="v85-step-num">Step 02</div>
+          <div class="v85-step-title">再寫紀錄</div>
+          <div class="v85-step-desc">填學到什麼、成果、問題、下一步，避免失憶。</div>
+        </div>
+        <div class="v85-step">
+          <div class="v85-step-num">Step 03</div>
+          <div class="v85-step-title">最後同步</div>
+          <div class="v85-step-desc">寫入 Supabase Cloud Brain，讓明天的建議更準。</div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1412,7 +1515,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Mic
   <div class="header">
     <div class="header-top">
       <div>
-        <div class="sys-label">⬡ MY LIFE OS v8.2</div>
+        <div class="sys-label">⬡ MY LIFE OS v8.6</div>
         <h1>90天 AI<br>作戰系統</h1>
       </div>
       <div class="day-badge">
@@ -1738,6 +1841,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Mic
       class="week-input"
       placeholder="例如：明天最重要的一個行動..."
     ></textarea>
+  </div>
+
+  <div class="sync-readiness" id="syncReadiness">
+    <div class="sync-readiness-top">
+      <div class="sync-readiness-title">Sync Readiness</div>
+      <div class="sync-readiness-score" id="syncReadinessScore">0%</div>
+    </div>
+    <div class="sync-readiness-bar">
+      <div class="sync-readiness-fill" id="syncReadinessFill"></div>
+    </div>
+    <div class="sync-readiness-text" id="syncReadinessText">
+      先填寫每日紀錄四欄，完成後再同步到 Cloud Brain。
+    </div>
   </div>
 
   <div class="divider"></div>
@@ -2134,6 +2250,7 @@ function updateUI() {
   slotStates = saved ? [...saved.slots] : [false, false, false, false];
   renderSlots();
   updateDailyProgress();
+  resetDayTransientUI();
 
   // Weekly notes
   const wk = Math.ceil(day / 7);
@@ -2142,6 +2259,8 @@ function updateUI() {
   document.getElementById('wq2').value = notes.q2 || '';
   document.getElementById('wq3').value = notes.q3 || '';
   document.getElementById('wq4').value = notes.q4 || '';
+
+  if (typeof updateCharacterHUD === 'function') updateCharacterHUD();
 }
 
 function renderSlots() {
@@ -2161,34 +2280,65 @@ function updateDailyProgress() {
 
   if (typeof syncExecutionPanelMirror === 'function') syncExecutionPanelMirror();
 
+  // v8.6 rule:
+  // Checking all tasks means the day is ready to close, but the system only
+  // advances after Daily Log is successfully synced. This avoids saving a Day 1
+  // log into Day 2 by accident.
   if (pct === 100) {
-    markDayComplete();
+    const status = document.getElementById('cloudBrainStatus');
+    if (status) status.textContent = '今日任務已 100% 完成｜同步今日紀錄後自動進入下一天';
   }
 }
 
-function markDayComplete() {
+function clearDailyLogInputs() {
+  ['learnedInput', 'resultInput', 'problemInput', 'nextStepInput'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  if (typeof updateSyncReadiness === 'function') updateSyncReadiness();
+}
+
+function resetExtraChecklist() {
+  document.querySelectorAll('.check-item.done').forEach(item => item.classList.remove('done'));
+}
+
+function resetDayTransientUI() {
+  resetExtraChecklist();
+  if (typeof updateSyncReadiness === 'function') updateSyncReadiness();
+}
+
+function completeDayAndAdvance() {
   const day = state.currentDay;
   const today = new Date().toDateString();
+  const alreadyCompleted = Boolean(state.completedDays[day]);
 
-  if (!state.completedDays[day]) {
-    state.completedDays[day] = { slots: [...slotStates], date: today };
+  state.completedDays[day] = {
+    slots: slotStates.length ? [...slotStates] : [true, true, true, true],
+    date: today
+  };
 
-    // Streak logic
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    if (state.lastCompletedDate === yesterday.toDateString() || state.lastCompletedDate === today) {
-      state.streak++;
-    } else {
-      state.streak = 1;
-    }
+  // v8.9 rule:
+  // 一個「作戰日」完成一次，streak 就 +1。
+  // 不再用真實日期限制，避免同一天測試 Day1 -> Day2 時 streak 不增加。
+  if (!alreadyCompleted) {
+    state.streak = (Number(state.streak) || 0) + 1;
     state.lastCompletedDate = today;
-    saveState();
-    updateUI();
-    showToast('🎯 今日完成！連續 ' + state.streak + ' 天');
-  } else {
-    state.completedDays[day].slots = [...slotStates];
-    saveState();
   }
+
+  if (day < 90) {
+    state.currentDay = day + 1;
+  }
+
+  saveState();
+  updateUI();
+  resetDayTransientUI();
+  if (typeof updateCharacterHUD === 'function') updateCharacterHUD();
+  showToast(day < 90 ? `🎯 Day ${day} 完成，已進入 Day ${state.currentDay}` : '🎯 90 天挑戰完成！');
+}
+
+function markDayComplete() {
+  // Backward-compatible wrapper for older buttons/logic.
+  completeDayAndAdvance();
 }
 
 function toggleSlot(el, idx) {
@@ -2207,6 +2357,7 @@ function changeDay(delta) {
   state.currentDay = newDay;
   saveState();
   updateUI();
+  resetDayTransientUI();
 }
 
 function jumpToday() {
@@ -2214,6 +2365,7 @@ function jumpToday() {
   state.currentDay = Math.min(state.currentDay, 90);
   saveState();
   updateUI();
+  resetDayTransientUI();
 }
 
 function saveState() {
@@ -2358,7 +2510,6 @@ async function syncToOS() {
 
   try {
     const cloudResult = await saveDailyToCloud(payload);
-    await saveAIStateToCloud();
     console.log("Supabase daily_logs inserted:", cloudResult);
     cloudOK = true;
   } catch (err) {
@@ -2367,14 +2518,19 @@ async function syncToOS() {
   }
 
   if (localOK && cloudOK) {
-    showToast("✅ 已同步到 My Life OS + Cloud");
-    setCloudStatus(`✅ 本機與 Supabase 皆已同步｜Day ${day}`);
+    clearDailyLogInputs();
+    completeDayAndAdvance();
+    try { await saveAIStateToCloud(); } catch (e) { console.warn("AI state sync after advance failed", e); }
+    setCloudStatus(`✅ 本機與 Supabase 皆已同步｜已進入 Day ${state.currentDay}`);
   } else if (cloudOK) {
-    showToast("✅ 已同步到 Cloud");
-    setCloudStatus(`✅ 已同步到 Supabase｜Day ${day}`);
+    clearDailyLogInputs();
+    completeDayAndAdvance();
+    try { await saveAIStateToCloud(); } catch (e) { console.warn("AI state sync after advance failed", e); }
+    setCloudStatus(`✅ 已同步到 Supabase｜已進入 Day ${state.currentDay}`);
   } else if (localOK) {
-    showToast("✅ 已同步到本機 My Life OS");
-    setCloudStatus("⚠️ 本機已同步，雲端失敗");
+    clearDailyLogInputs();
+    completeDayAndAdvance();
+    setCloudStatus(`⚠️ 本機已同步，雲端失敗｜已進入 Day ${state.currentDay}`);
   } else {
     showToast("❌ 同步失敗");
     setCloudStatus("❌ 本機與雲端都未同步成功");
@@ -2445,7 +2601,7 @@ async function saveDailyToCloud(payload) {
   const row = {
     day: payload.day,
     content: JSON.stringify(payload),
-    source: "dashboard-v5"
+    source: "dashboard-v8.9"
   };
 
   await supabaseRequest("daily_logs", {
@@ -2479,6 +2635,46 @@ async function saveAIStateToCloud() {
   });
 }
 
+async function loadAIStateFromCloud() {
+  try {
+    const rows = await supabaseRequest("ai_state", {
+      query: "?select=*&order=created_at.desc&limit=1"
+    });
+    if (Array.isArray(rows) && rows.length) {
+      const row = rows[0];
+      // v8.9: Supabase ai_state is the source of truth.
+      // 不用 Math.max，避免本機 localStorage 舊 Day 蓋過剛 reset 的雲端 Day 1。
+      const cloudDay = row.current_day ? Math.max(1, Math.min(90, Number(row.current_day))) : 1;
+      const cloudStreak = typeof row.streak === 'number' ? Math.max(0, Number(row.streak)) : 0;
+      const localDay = Number(state.currentDay) || 1;
+      const localStreak = Number(state.streak) || 0;
+      const cloudLooksReset = cloudDay <= 1 && cloudStreak === 0;
+      const cloudIsBehindLocal = cloudDay < localDay || cloudStreak < localStreak;
+
+      // v8.9: Supabase ai_state is the source of truth.
+      // 如果你在 Supabase reset 到 Day 1 / streak 0，必須清掉本機 localStorage 內舊的 completedDays，
+      // 否則 Day 1 會被判斷成 alreadyCompleted，導致 streak 不增加、勾選也不乾淨。
+      if (cloudLooksReset || cloudIsBehindLocal) {
+        state.completedDays = {};
+        state.lastCompletedDate = null;
+        slotStates = [false, false, false, false];
+        resetDayTransientUI();
+      }
+
+      state.currentDay = cloudDay;
+      state.streak = cloudStreak;
+      if (typeof row.level === 'number') state.level = Math.max(1, Number(row.level));
+      if (typeof row.xp === 'number') state.xp = Math.max(0, Number(row.xp));
+      saveState();
+      updateUI();
+      resetDayTransientUI();
+      if (typeof updateCharacterHUD === 'function') updateCharacterHUD();
+    }
+  } catch (err) {
+    console.warn("AI state cloud load skipped:", err);
+  }
+}
+
 async function loadLatestCloudState() {
   try {
     const rows = await supabaseRequest("daily_logs", {
@@ -2487,13 +2683,10 @@ async function loadLatestCloudState() {
 
     if (Array.isArray(rows) && rows.length) {
       const latest = rows[0];
-      if (latest.day && latest.day > 0) {
-        state.currentDay = latest.day;
-        saveState();
-        updateUI();
-      }
-
+      // v8.9: daily_logs 只用來分析 Cloud Brain，不再反推 currentDay。
+      // currentDay / streak 的唯一雲端來源是 ai_state。
       updateCloudAICore(rows);
+      updateUI();
       setCloudStatus(`✅ 已連接 Supabase｜雲端最近紀錄 Day ${latest.day || "-"}`);
     } else {
       setCloudStatus("✅ 已連接 Supabase｜目前尚無雲端紀錄");
@@ -2744,7 +2937,8 @@ async function initDashboard() {
 
   updateUI();
   loadAIMission();
-  if (typeof loadLatestCloudState === 'function') loadLatestCloudState();
+  if (typeof loadAIStateFromCloud === 'function') await loadAIStateFromCloud();
+  if (typeof loadLatestCloudState === 'function') await loadLatestCloudState();
 
 setTimeout(() => {
  const coach=document.getElementById("aiCoachTalk");
@@ -2836,16 +3030,12 @@ async function loadRPGStats() {
 }
 
 const autoSaveDaily = debounce(async () => {
+  // v8.9 安全規則：自動存檔只更新本機狀態，不觸發 Supabase 同步，也不推進天數。
+  // 只有使用者手動點「同步今日紀錄」才會寫入 daily_logs 並進入下一天。
   const status = document.getElementById("autoSaveStatus");
-  if (status) status.textContent = "自動存檔中...";
-
-  try {
-    await syncToOS();
-    await loadRPGStats();
-    if (status) status.textContent = "✅ 已自動存檔";
-  } catch (err) {
-    if (status) status.textContent = "⚠️ 自動存檔失敗";
-  }
+  if (status) status.textContent = "本機草稿已暫存，尚未同步雲端";
+  saveState();
+  if (typeof updateSyncReadiness === 'function') updateSyncReadiness();
 }, 1200);
 
 function bindAutoSave() {
@@ -2869,18 +3059,20 @@ function bindAutoSave() {
 const originalToggleSlot = typeof toggleSlot === "function" ? toggleSlot : null;
 if (originalToggleSlot) {
   toggleSlot = function(el, idx) {
+    // v8.9：勾選時間表只更新進度，不自動同步、不自動跳天。
     originalToggleSlot(el, idx);
-    autoSaveDaily();
-    loadRPGStats();
+    saveState();
+    if (typeof updateCharacterHUD === 'function') updateCharacterHUD();
   };
 }
 
 const originalToggleCheck = typeof toggleCheck === "function" ? toggleCheck : null;
 if (originalToggleCheck) {
   toggleCheck = function(el) {
+    // v8.9：勾選清單只更新 UI，不自動同步、不自動跳天。
     originalToggleCheck(el);
-    autoSaveDaily();
-    loadRPGStats();
+    saveState();
+    if (typeof updateCharacterHUD === 'function') updateCharacterHUD();
   };
 }
 
@@ -2936,12 +3128,42 @@ function syncExecutionPanelMirror() {
 // ========================
 
 initDashboard();
+
+
+// ===== V8.9 Sync Readiness =====
+function updateSyncReadiness(){
+  const fields = [
+    document.getElementById('learnedInput'),
+    document.getElementById('resultInput'),
+    document.getElementById('problemInput'),
+    document.getElementById('nextStepInput')
+  ];
+  const filled = fields.filter(el => el && el.value.trim().length > 0).length;
+  const pct = Math.round((filled / fields.length) * 100);
+  const score = document.getElementById('syncReadinessScore');
+  const fill = document.getElementById('syncReadinessFill');
+  const text = document.getElementById('syncReadinessText');
+  if(score) score.textContent = pct + '%';
+  if(fill) fill.style.width = pct + '%';
+  if(text){
+    if(pct === 0) text.textContent = '先填寫每日紀錄四欄，完成後再同步到 Cloud Brain。';
+    else if(pct < 50) text.textContent = '已開始記錄。至少補上成果與下一步，明天的主腦判斷才會準。';
+    else if(pct < 100) text.textContent = '快完成了。建議把四欄補齊，再按同步今日紀錄。';
+    else text.textContent = '紀錄完整，可以同步到 Cloud Brain。';
+  }
+}
+['learnedInput','resultInput','problemInput','nextStepInput'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el) el.addEventListener('input', updateSyncReadiness);
+});
+updateSyncReadiness();
+
 </script>
 
 
 <script>
 /* ===============================
-   DASHBOARD V8 HELPER LAYER
+   DASHBOARD V8.9 HELPER LAYER
    Non-destructive: keeps v7.5 Supabase logic intact
    =============================== */
 function v8Text(id){ const el=document.getElementById(id); return el ? (el.textContent || '').trim() : ''; }
@@ -2969,6 +3191,36 @@ window.addEventListener('load',()=>{
   syncV8Dashboard();
   setInterval(syncV8Dashboard,2500);
 });
+
+
+// ===== V8.9 Sync Readiness =====
+function updateSyncReadiness(){
+  const fields = [
+    document.getElementById('learnedInput'),
+    document.getElementById('resultInput'),
+    document.getElementById('problemInput'),
+    document.getElementById('nextStepInput')
+  ];
+  const filled = fields.filter(el => el && el.value.trim().length > 0).length;
+  const pct = Math.round((filled / fields.length) * 100);
+  const score = document.getElementById('syncReadinessScore');
+  const fill = document.getElementById('syncReadinessFill');
+  const text = document.getElementById('syncReadinessText');
+  if(score) score.textContent = pct + '%';
+  if(fill) fill.style.width = pct + '%';
+  if(text){
+    if(pct === 0) text.textContent = '先填寫每日紀錄四欄，完成後再同步到 Cloud Brain。';
+    else if(pct < 50) text.textContent = '已開始記錄。至少補上成果與下一步，明天的主腦判斷才會準。';
+    else if(pct < 100) text.textContent = '快完成了。建議把四欄補齊，再按同步今日紀錄。';
+    else text.textContent = '紀錄完整，可以同步到 Cloud Brain。';
+  }
+}
+['learnedInput','resultInput','problemInput','nextStepInput'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el) el.addEventListener('input', updateSyncReadiness);
+});
+updateSyncReadiness();
+
 </script>
 
 </body>
