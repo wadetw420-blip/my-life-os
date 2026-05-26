@@ -1,9 +1,12 @@
-[build]
-  publish = "."
-
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
+{
+  "name": "My Life OS v9.3",
+  "short_name": "Life OS",
+  "description": "My Life OS v9.3 AI 作戰控制台｜Smart Coach、Stats Dashboard、Cloud Brain、Daily Log、Supabase 記憶層與 90 天成長實驗。",
+  "start_url": "/my-life-os/",
+  "scope": "/my-life-os/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#00e5ff",
+  "orientation": "portrait-primary",
+  "icons": []
+}
