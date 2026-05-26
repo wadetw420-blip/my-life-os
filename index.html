@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Life OS v8.9｜AI 作戰控制台</title>
+<title>My Life OS v9.3｜AI 作戰控制台</title>
 <!-- v8: external font dependency removed; using system fonts -->
 <style>
   :root {
@@ -1427,10 +1427,41 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Mic
   .sync-readiness{padding:11px;}
 }
 
+
+
+/* ===== V9.3 Smart Coach / Stats / PWA Polish ===== */
+.v93-coach-card{
+  margin-top:16px;
+  padding:18px;
+  border-radius:18px;
+  background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(0,212,170,.08));
+  border:1px solid rgba(124,58,237,.35);
+  box-shadow:0 18px 60px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.04);
+}
+.v93-coach-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+.v93-chip{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:800}
+.v93-coach-title{font-size:19px;font-weight:900;line-height:1.25;color:var(--text);margin-top:4px}
+.v93-coach-badge{flex:0 0 auto;border:1px solid rgba(0,212,170,.35);background:rgba(0,212,170,.08);color:var(--accent);padding:7px 10px;border-radius:999px;font-size:11px;font-weight:800}
+.v93-coach-body{color:var(--text2);font-size:13px;line-height:1.75;margin:10px 0 14px}
+.v93-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.v93-mini{border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.035);border-radius:14px;padding:12px;min-height:76px}
+.v93-mini-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:7px}
+.v93-mini-value{font-size:13px;line-height:1.55;color:var(--text);font-weight:800}
+.v93-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 16px}
+.v93-stat-card{border:1px solid rgba(0,212,170,.18);background:linear-gradient(145deg,rgba(0,212,170,.07),rgba(124,58,237,.05));border-radius:16px;padding:14px}
+.v93-stat-num{font-size:24px;font-weight:900;color:var(--accent);line-height:1}
+.v93-stat-label{font-size:11px;color:var(--text2);margin-top:7px}
+.v93-pwa-note{font-size:11px;line-height:1.65;color:var(--text2);border-left:2px solid var(--accent);padding:10px 12px;background:rgba(0,212,170,.055);border-radius:8px;margin-top:10px}
+@media(max-width:760px){
+  .v93-grid,.v93-stats-grid{grid-template-columns:1fr}
+  .v93-coach-card{padding:15px;margin-top:12px}
+  .v93-coach-title{font-size:17px}
+}
+
 </style>
-<!-- v8: manifest disabled to avoid GitHub Pages 404 during dashboard use -->
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#00e5ff">
-<!-- Dashboard v8.6 smart flow: focused daily flow, sync readiness, Supabase logic unchanged. -->
+<!-- Dashboard v9.3 smart coach + stats + PWA layer. Supabase schema unchanged. -->
 </head>
 <body>
 <div class="app">
@@ -1440,7 +1471,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Mic
   <div class="character-hud" id="characterHud">
     <div class="hud-top">
       <div>
-        <div class="hud-title-label">⬡ My Life OS · Cloud Brain V8.9</div>
+        <div class="hud-title-label">⬡ My Life OS · Cloud Brain V9.3</div>
         <div class="hud-title">AI 作戰控制台</div>
         <div class="hud-subtitle">今日主線 · Daily Log · Cloud Brain · 90天變現實驗</div>
       </div>
@@ -1482,7 +1513,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Mic
   <!-- V8 DAILY COMMAND CENTER -->
   <section class="v8-command-center" id="v8CommandCenter">
     <div class="v8-card">
-      <div class="v8-kicker">Today Command Center · v8.9</div>
+      <div class="v8-kicker">Today Command Center · v9.3</div>
       <div class="v8-title">今天只做一件會推進人生主線的事</div>
       <div class="v8-sub">先完成可保存成果，再同步 Cloud Brain。不要只整理系統、不要只研究工具。</div>
       <div class="v8-mission">
@@ -1507,6 +1538,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Mic
           <div class="v85-step-desc">寫入 Supabase Cloud Brain，讓明天的建議更準。</div>
         </div>
       </div>
+
+      <div class="v93-coach-card" id="v93CoachCard">
+        <div class="v93-coach-head">
+          <div>
+            <div class="v93-chip">V9.3 Smart Coach</div>
+            <div class="v93-coach-title" id="v93CoachTitle">今天先完成一個最小可見成果。</div>
+          </div>
+          <div class="v93-coach-badge" id="v93CoachBadge">Ready</div>
+        </div>
+        <div class="v93-coach-body" id="v93CoachBody">系統會根據 Day、連續完成、今日進度與最近 Daily Log，自動調整教練提醒。</div>
+        <div class="v93-grid">
+          <div class="v93-mini">
+            <div class="v93-mini-label">今日判斷</div>
+            <div class="v93-mini-value" id="v93Insight">等待資料同步。</div>
+          </div>
+          <div class="v93-mini">
+            <div class="v93-mini-label">高 ROI 行動</div>
+            <div class="v93-mini-value" id="v93Action">完成主線後立刻寫 Daily Log。</div>
+          </div>
+          <div class="v93-mini">
+            <div class="v93-mini-label">避免事項</div>
+            <div class="v93-mini-value" id="v93Avoid">不要只研究工具。</div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1515,7 +1571,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Mic
   <div class="header">
     <div class="header-top">
       <div>
-        <div class="sys-label">⬡ MY LIFE OS v8.6</div>
+        <div class="sys-label">⬡ MY LIFE OS v9.3</div>
         <h1>90天 AI<br>作戰系統</h1>
       </div>
       <div class="day-badge">
@@ -1611,7 +1667,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Mic
 
     <!-- AI Mission Engine -->
     <div class="focus-card" id="aiMissionCard">
-      <div class="card-label">AI 雲端主腦 v7</div>
+      <div class="card-label">AI 智慧教練 v9.3</div>
 
       <div style="font-size:11px;color:var(--text3);margin-bottom:8px">
         讀取：Supabase Cloud Brain / 每日紀錄 / 週回顧 / AI 狀態
@@ -2026,6 +2082,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Mic
   <!-- STATS PANEL -->
   <div class="panel" id="panel-stats">
     <div class="section-title" style="margin-bottom:14px">進度數據總覽</div>
+
+    <div class="v93-stats-grid">
+      <div class="v93-stat-card">
+        <div class="v93-stat-num" id="v93LogCount">0</div>
+        <div class="v93-stat-label">雲端 Daily Logs</div>
+      </div>
+      <div class="v93-stat-card">
+        <div class="v93-stat-num" id="v93OutputCount">0</div>
+        <div class="v93-stat-label">近 7 筆輸出訊號</div>
+      </div>
+      <div class="v93-stat-card">
+        <div class="v93-stat-num" id="v93MoneyCount">0</div>
+        <div class="v93-stat-label">近 7 筆變現訊號</div>
+      </div>
+    </div>
+    <div class="v93-pwa-note">V9.3 已加入 PWA 支援。上傳 <code>manifest.json</code> 與 <code>sw.js</code> 後，可用手機瀏覽器選單「加到主畫面」。</div>
 
     <div class="stat-row">
       <div class="stat-box">
@@ -2601,7 +2673,7 @@ async function saveDailyToCloud(payload) {
   const row = {
     day: payload.day,
     content: JSON.stringify(payload),
-    source: "dashboard-v8.9"
+    source: "dashboard-v9.3"
   };
 
   await supabaseRequest("daily_logs", {
@@ -3163,7 +3235,7 @@ updateSyncReadiness();
 
 <script>
 /* ===============================
-   DASHBOARD V8.9 HELPER LAYER
+   DASHBOARD V9.3 HELPER LAYER
    Non-destructive: keeps v7.5 Supabase logic intact
    =============================== */
 function v8Text(id){ const el=document.getElementById(id); return el ? (el.textContent || '').trim() : ''; }
@@ -3221,6 +3293,119 @@ function updateSyncReadiness(){
 });
 updateSyncReadiness();
 
+</script>
+
+
+
+<script>
+/* ===============================
+   V9.3 Smart Coach + Stats + PWA Layer
+   Schema-safe: ai_state(current_day, streak, level, xp), daily_logs(day, content, source)
+   =============================== */
+window.v93CloudStats = { logs:0, output:0, learning:0, money:0, latest:null };
+
+function v93Set(id, value){ const el=document.getElementById(id); if(el) el.textContent = value; }
+function v93DailyProgress(){ return Array.isArray(slotStates) && slotStates.length ? Math.round((slotStates.filter(Boolean).length / slotStates.length) * 100) : 0; }
+function v93AnalyzeRows(rows){
+  const parsed = (rows || []).map(r=>{ try{return JSON.parse(r.content || '{}')}catch(e){return null} }).filter(Boolean);
+  const combined = parsed.map(x => [x.learned||'', x.result||'', x.problem||'', x.nextStep||''].join('\n')).join('\n');
+  const count = (re) => (combined.match(re) || []).length;
+  window.v93CloudStats = {
+    logs: parsed.length,
+    latest: parsed[0] || null,
+    output: count(/輸出|成果|作品|腳本|貼文|短影音|完成|展示|案例/g),
+    learning: count(/學|研究|工具|閱讀|筆記|看影片|了解|測試/g),
+    money: count(/變現|收入|服務|產品|模板|賣|客戶|報價|銷售/g)
+  };
+  v93UpdateStatsDashboard();
+}
+
+function v93CoachText(){
+  const day = Number(state.currentDay || 1);
+  const streak = Number(state.streak || 0);
+  const dp = v93DailyProgress();
+  const stats = window.v93CloudStats || {};
+  let title = '今天先完成一個最小可見成果。';
+  let body = '不要把整理系統當成進步。先做出一個可以保存、展示或變現的小成果，再同步 Cloud Brain。';
+  let badge = 'Focus';
+  let insight = `Day ${day}｜連續 ${streak} 天｜今日進度 ${dp}%`;
+  let action = '用 30 分鐘完成今日唯一主線，然後填 Daily Log。';
+  let avoid = '不要只研究工具。';
+
+  if (dp === 0) {
+    title = '先不要想太多，從第一個任務開始。';
+    action = '勾選第一個時間表任務，建立今天的啟動感。';
+  } else if (dp < 100) {
+    title = '你已經開始了，今天要把它收完。';
+    action = '把固定時間表做完，再寫下成果。';
+    badge = 'In Progress';
+  } else {
+    title = '今日任務已完成，現在該同步成果。';
+    action = '填滿四欄 Daily Log，按「同步今日紀錄」。';
+    badge = 'Ready Sync';
+  }
+
+  if (stats.logs >= 3 && stats.learning > stats.output) {
+    insight = '最近學習訊號偏多，輸出訊號偏少。';
+    body = '今天不要再開新工具。把已經學到的內容整理成一篇筆記、模板或小案例。';
+    avoid = '禁止新增研究清單。';
+  }
+  if (stats.output > 0 && stats.money === 0 && day >= 7) {
+    insight = '已有輸出訊號，但變現訊號偏少。';
+    action = '把今天成果命名成一個小服務、模板或作品案例。';
+  }
+  if (streak >= 3) {
+    badge = 'Streak +' + streak;
+    body = '節奏已經建立，今天不要破功。保持小而穩的輸出。';
+  }
+
+  return { title, body, badge, insight, action, avoid };
+}
+
+function v93RenderSmartCoach(){
+  const c = v93CoachText();
+  v93Set('v93CoachTitle', c.title);
+  v93Set('v93CoachBody', c.body);
+  v93Set('v93CoachBadge', c.badge);
+  v93Set('v93Insight', c.insight);
+  v93Set('v93Action', c.action);
+  v93Set('v93Avoid', c.avoid);
+  const mirror = document.getElementById('aiCoachTalkMirror');
+  if (mirror) mirror.textContent = c.body;
+}
+
+function v93UpdateStatsDashboard(){
+  const s = window.v93CloudStats || {};
+  v93Set('v93LogCount', s.logs || 0);
+  v93Set('v93OutputCount', s.output || 0);
+  v93Set('v93MoneyCount', s.money || 0);
+}
+
+// Wrap existing functions without changing core sync logic.
+(function(){
+  const oldUpdateUI = window.updateUI;
+  if (typeof oldUpdateUI === 'function') {
+    window.updateUI = function(){ const r = oldUpdateUI.apply(this, arguments); v93RenderSmartCoach(); v93UpdateStatsDashboard(); return r; };
+  }
+  const oldUpdateDailyProgress = window.updateDailyProgress;
+  if (typeof oldUpdateDailyProgress === 'function') {
+    window.updateDailyProgress = function(){ const r = oldUpdateDailyProgress.apply(this, arguments); v93RenderSmartCoach(); return r; };
+  }
+  const oldCloudCore = window.updateCloudAICore;
+  if (typeof oldCloudCore === 'function') {
+    window.updateCloudAICore = function(rows){ v93AnalyzeRows(rows); const r = oldCloudCore.apply(this, arguments); v93RenderSmartCoach(); return r; };
+  }
+})();
+
+// Register service worker only on deployed http(s), never on file:// testing.
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(err => console.warn('Service worker registration skipped:', err));
+  });
+}
+
+v93RenderSmartCoach();
+v93UpdateStatsDashboard();
 </script>
 
 </body>
